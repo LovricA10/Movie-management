@@ -7,7 +7,6 @@ package hr.algebra;
 import hr.algebra.view.EditActorsPanel;
 import hr.algebra.view.EditDirectorsPanel;
 import hr.algebra.view.EditMoviesPanel;
-import hr.algebra.view.UploadArticlesPanel;
 
 /**
  *
@@ -35,7 +34,7 @@ public class MovieManager extends javax.swing.JFrame {
         tpContent = new javax.swing.JTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Articles");
+        setTitle("Movies");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

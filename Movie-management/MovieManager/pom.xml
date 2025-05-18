@@ -23,7 +23,7 @@
     <properties>
         <maven.compiler.source>20</maven.compiler.source>
         <maven.compiler.target>20</maven.compiler.target>
-        <exec.mainClass>hr.algebra.ArticleManager</exec.mainClass>
+        <exec.mainClass>hr.algebra.MovieManager</exec.mainClass>
     </properties>
     <name>MovieManager</name>
 </project>
