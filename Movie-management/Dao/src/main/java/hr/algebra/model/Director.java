@@ -4,6 +4,7 @@
  */
 package hr.algebra.model;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -16,14 +17,14 @@ public final class Director {
     private int id;
     private String name;
     private String lastName;
-    private String dateBirth;
+    private LocalDateTime dateBirth;
     private String picturePath;
 
     
     public Director(){
         
     }
-    public Director(int id, String name, String lastName, String dateBirth, String picturePath) {
+    public Director(int id, String name, String lastName, LocalDateTime dateBirth, String picturePath) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -31,7 +32,7 @@ public final class Director {
         this.picturePath = picturePath;
     }
 
-    public Director(String name, String lastName, String dateBirth, String picturePath) {
+    public Director(String name, String lastName, LocalDateTime dateBirth, String picturePath) {
         this.name = name;
         this.lastName = lastName;
         this.dateBirth = dateBirth;
@@ -62,11 +63,11 @@ public final class Director {
         this.lastName = lastName;
     }
 
-    public String getDateBirth() {
+    public LocalDateTime getDateBirth() {
         return dateBirth;
     }
 
-    public void setDateBirth(String dateBirth) {
+    public void setDateBirth(LocalDateTime dateBirth) {
         this.dateBirth = dateBirth;
     }
 

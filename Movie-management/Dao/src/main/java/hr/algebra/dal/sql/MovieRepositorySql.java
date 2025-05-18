@@ -5,7 +5,6 @@
 package hr.algebra.dal.sql;
 
 import hr.algebra.dal.MovieRepository;
-import hr.algebra.model.User;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -15,9 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
-import hr.algebra.dal.UserRepository;
 import hr.algebra.model.Movie;
-import java.time.LocalDate;
 
 public class MovieRepositorySql implements MovieRepository {
 
@@ -103,7 +100,7 @@ public class MovieRepositorySql implements MovieRepository {
                         rs.getInt(ID_MOVIE),
                         rs.getString(TITLE),
                         rs.getInt(DURATION),
-                        LocalDate.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
+                        LocalDateTime.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
                         rs.getString(PICTURE_PATH)
                 ));
             }
@@ -124,7 +121,7 @@ public class MovieRepositorySql implements MovieRepository {
                         rs.getInt(ID_MOVIE),
                         rs.getString(TITLE),
                         rs.getInt(DURATION),
-                        LocalDate.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
+                        LocalDateTime.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
                         rs.getString(PICTURE_PATH)
                 ));
            }

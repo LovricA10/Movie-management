@@ -4,7 +4,7 @@
  */
 package hr.algebra.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -17,7 +17,7 @@ public final class Movie {
     private int id;
     private String title;
     private int duration;
-    private LocalDate startDate;
+    private LocalDateTime startDate;
     private String picturePath;
     
     
@@ -25,7 +25,7 @@ public final class Movie {
         
     }
 
-    public Movie(int id, String title, int duration, LocalDate startDate, String picturePath) {
+    public Movie(int id, String title, int duration, LocalDateTime startDate, String picturePath) {
         this.id = id;
         this.title = title;
         this.duration = duration;
@@ -33,7 +33,7 @@ public final class Movie {
         this.picturePath = picturePath;
     }
 
-    public Movie(String title, int duration, LocalDate startDate, String picturePath) {
+    public Movie(String title, int duration, LocalDateTime startDate, String picturePath) {
         this.title = title;
         this.duration = duration;
         this.startDate = startDate;
@@ -64,11 +64,11 @@ public final class Movie {
         this.duration = duration;
     }
 
-    public LocalDate getStartDate() {
+    public LocalDateTime getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(LocalDateTime startDate) {
         this.startDate = startDate;
     }
 

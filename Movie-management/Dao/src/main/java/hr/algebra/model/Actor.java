@@ -5,24 +5,23 @@
 package hr.algebra.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import javax.swing.text.Utilities;
 
 /**
  *
  * @author Lovric
  */
-public class Actor {
+public final class Actor {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     private int id;
     private String name;
     private String lastName;
-    private String dateBirth;
+    private LocalDateTime dateBirth;
     private String picturePath;
 
     public Actor(){
         
     }
-    public Actor(int id, String name, String lastName, String dateBirth, String picturePath) {
+    public Actor(int id, String name, String lastName, LocalDateTime dateBirth, String picturePath) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -30,7 +29,7 @@ public class Actor {
         this.picturePath = picturePath;
     }
 
-    public Actor(String name, String lastName, String dateBirth, String picturePath) {
+    public Actor(String name, String lastName, LocalDateTime dateBirth, String picturePath) {
         this.name = name;
         this.lastName = lastName;
         this.dateBirth = dateBirth;
@@ -61,11 +60,11 @@ public class Actor {
         this.lastName = lastName;
     }
 
-    public String getDateBirth() {
+    public LocalDateTime getDateBirth() {
         return dateBirth;
     }
 
-    public void setDateBirth(String dateBirth) {
+    public void setDateBirth(LocalDateTime dateBirth) {
         this.dateBirth = dateBirth;
     }
 

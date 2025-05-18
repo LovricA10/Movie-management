@@ -5,8 +5,6 @@
  */
 package hr.algebra.dal;
 
-import hr.algebra.dal.sql.DataSourceSingleton;
-import hr.algebra.dal.sql.MovieRepositorySql;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
