@@ -78,6 +78,12 @@ public final class Director {
     public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
     }
+
+    @Override
+    public String toString() {
+        return "Director{" + "id=" + id + ", name=" + name + ", lastName=" + lastName + ", dateBirth=" + dateBirth + '}';
+    }
+    
     
     
     

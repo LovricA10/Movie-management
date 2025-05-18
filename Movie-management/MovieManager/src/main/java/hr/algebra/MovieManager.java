@@ -4,19 +4,21 @@
  */
 package hr.algebra;
 
-import hr.algebra.view.EditArticlesPanel;
+import hr.algebra.view.EditActorsPanel;
+import hr.algebra.view.EditDirectorsPanel;
+import hr.algebra.view.EditMoviesPanel;
 import hr.algebra.view.UploadArticlesPanel;
 
 /**
  *
  * @author daniel.bele
  */
-public class ArticleManager extends javax.swing.JFrame {
+public class MovieManager extends javax.swing.JFrame {
 
     /**
      * Creates new form ArticleManager
      */
-    public ArticleManager() {
+    public MovieManager() {
         initComponents();
         initPanels();
     }
@@ -67,20 +69,21 @@ public class ArticleManager extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ArticleManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MovieManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ArticleManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MovieManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ArticleManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MovieManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ArticleManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MovieManager.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ArticleManager().setVisible(true);
+                new MovieManager().setVisible(true);
             }
         });
     }
@@ -90,9 +93,11 @@ public class ArticleManager extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void initPanels() {
-        tpContent.add(UPLOAD_ARTICLES, new UploadArticlesPanel());
-        tpContent.add(EDIT_ARTICLES, new EditArticlesPanel());
+        tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
+        tpContent.add(EDIT_ACTORS, new EditActorsPanel());
+        tpContent.add(EDIT_DIRECTORS, new EditDirectorsPanel());
     }
-    private static final String UPLOAD_ARTICLES = "Upload articles";
-    private static final String EDIT_ARTICLES = "Edit articles";
+    private static final String EDIT_MOVIES = "Edit Movies";
+    private static final String EDIT_ACTORS = "Edit Actors";
+    private static final String EDIT_DIRECTORS = "Edit Directors";
 }

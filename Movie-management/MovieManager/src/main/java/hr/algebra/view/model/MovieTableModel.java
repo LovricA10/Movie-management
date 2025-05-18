@@ -46,7 +46,7 @@ public class MovieTableModel extends AbstractTableModel{
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-          Movie movie = movies.get(rowIndex);
+         Movie movie = movies.get(rowIndex);
         return switch (columnIndex) {
             case 0 -> movie.getId();
             case 1 -> movie.getTitle();

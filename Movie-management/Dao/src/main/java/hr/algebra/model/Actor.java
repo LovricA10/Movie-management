@@ -75,6 +75,11 @@ public final class Actor {
     public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
     }
+
+    @Override
+    public String toString() {
+        return "Actor{" + "id=" + id + ", name=" + name + ", lastName=" + lastName + ", dateBirth=" + dateBirth + '}';
+    }
     
     
     

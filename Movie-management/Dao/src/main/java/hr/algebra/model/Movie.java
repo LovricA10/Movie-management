@@ -79,6 +79,11 @@ public final class Movie {
     public void setPicturePath(String picturePath) {
         this.picturePath = picturePath;
     }
+
+    @Override
+    public String toString() {
+        return "Movie{" + "id=" + id + ", title=" + title + ", duration=" + duration + ", startDate=" + startDate + ", picturePath=" + picturePath + '}';
+    }
     
     
 }
