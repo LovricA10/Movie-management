@@ -24,6 +24,15 @@ CREATE TABLE Movie (
 )
 GO
 
+ALTER TABLE Movie
+DROP COLUMN Duration;
+
+ALTER TABLE Movie
+ADD Description NVARCHAR(MAX);
+
+ALTER TABLE Movie
+ADD Link NVARCHAR(500);
+
 -- Genre table
 CREATE TABLE Genre (
     IDGenre INT PRIMARY KEY IDENTITY,
@@ -151,22 +160,24 @@ END
 GO
 
 -- MOVIE
-CREATE PROCEDURE createMovie
+CREATE OR ALTER PROCEDURE createMovie
     @Title NVARCHAR(200),
-    @Duration INT,
+    @Link NVARCHAR(500),
+    @Description NVARCHAR(MAX),
     @StartDate NVARCHAR(90),
     @PicturePath NVARCHAR(200),
     @IDMovie INT OUTPUT
 AS
 BEGIN
-    INSERT INTO Movie VALUES (@Title, @Duration, @StartDate, @PicturePath)
+    INSERT INTO Movie VALUES (@Title, @Link,@Description, @StartDate, @PicturePath)
     SET @IDMovie = SCOPE_IDENTITY()
 END
 GO
 
-CREATE PROCEDURE updateMovie
+CREATE OR ALTER  PROCEDURE updateMovie
     @Title NVARCHAR(200),
-    @Duration INT,
+    @Link NVARCHAR(500),
+    @Description NVARCHAR(MAX),
     @StartDate NVARCHAR(90),
     @PicturePath NVARCHAR(200),
     @IDMovie INT
@@ -174,7 +185,8 @@ AS
 BEGIN
     UPDATE Movie SET
         Title = @Title,
-        Duration = @Duration,
+		Link = @Link,
+        Description = @Description,
         StartDate = @StartDate,
         PicturePath = @PicturePath
     WHERE IDMovie = @IDMovie
