@@ -28,7 +28,7 @@ public class RepositoryFactory {
     
     private static final Properties PROPERTIES = new Properties();
     private static final String PATH = "/config/repository.properties";
-    private static final String CLASS_NAME = "CLASS_NAME";
+    //private static final String CLASS_NAME = "CLASS_NAME";
     private static final Map<Class<?>,Object> REPOSITORIES = new HashMap<>();
     
     

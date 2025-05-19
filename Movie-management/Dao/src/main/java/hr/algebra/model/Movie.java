@@ -16,7 +16,8 @@ public final class Movie {
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     private int id;
     private String title;
-    private int duration;
+    private String link;
+    private String description;
     private LocalDateTime startDate;
     private String picturePath;
     
@@ -25,17 +26,19 @@ public final class Movie {
         
     }
 
-    public Movie(int id, String title, int duration, LocalDateTime startDate, String picturePath) {
+    public Movie(int id, String title, String link, String description, LocalDateTime startDate, String picturePath) {
         this.id = id;
         this.title = title;
-        this.duration = duration;
+        this.link = link;
+        this.description = description;
         this.startDate = startDate;
         this.picturePath = picturePath;
     }
 
-    public Movie(String title, int duration, LocalDateTime startDate, String picturePath) {
+    public Movie(String title, String link, String description, LocalDateTime startDate, String picturePath) {
         this.title = title;
-        this.duration = duration;
+        this.link = link;
+        this.description = description;
         this.startDate = startDate;
         this.picturePath = picturePath;
     }
@@ -56,12 +59,20 @@ public final class Movie {
         this.title = title;
     }
 
-    public int getDuration() {
-        return duration;
+    public String getLink() {
+        return link;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getStartDate() {
@@ -82,8 +93,11 @@ public final class Movie {
 
     @Override
     public String toString() {
-        return "Movie{" + "id=" + id + ", title=" + title + ", duration=" + duration + ", startDate=" + startDate + ", picturePath=" + picturePath + '}';
+        return "Movie{" + "id=" + id + ", title=" + title + ", link=" + link + ", description=" + description + ", startDate=" + startDate + ", picturePath=" + picturePath + '}';
     }
+
     
+
+ 
     
 }

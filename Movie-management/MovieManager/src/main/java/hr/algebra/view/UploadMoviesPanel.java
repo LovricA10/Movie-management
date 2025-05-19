@@ -10,12 +10,12 @@ import hr.algebra.model.Movie;
  *
  * @author Lovric
  */
-public class AdminPanel extends javax.swing.JPanel {
+public class UploadMoviesPanel extends javax.swing.JPanel {
 
     /**
      * Creates new form AdminPanel
      */
-    public AdminPanel() {
+    public UploadMoviesPanel() {
         initComponents();
     }
 
@@ -30,14 +30,16 @@ public class AdminPanel extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         lsMoviesList = new javax.swing.JList<>();
-        btnClearData = new javax.swing.JButton();
-        btnDownloadData = new javax.swing.JButton();
+        btnDeleteMovies = new javax.swing.JButton();
+        btnUploadMovies = new javax.swing.JButton();
 
         jScrollPane1.setViewportView(lsMoviesList);
 
-        btnClearData.setText("Clear data");
+        btnDeleteMovies.setBackground(new java.awt.Color(255, 51, 0));
+        btnDeleteMovies.setForeground(new java.awt.Color(255, 255, 255));
+        btnDeleteMovies.setText("Delete Movies");
 
-        btnDownloadData.setText("Download data");
+        btnUploadMovies.setText("Upload Movies");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -48,9 +50,9 @@ public class AdminPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnDownloadData, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnUploadMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 360, Short.MAX_VALUE)
-                        .addComponent(btnClearData, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnDeleteMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -60,16 +62,16 @@ public class AdminPanel extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnDownloadData, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
-                    .addComponent(btnClearData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnUploadMovies, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                    .addComponent(btnDeleteMovies, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnClearData;
-    private javax.swing.JButton btnDownloadData;
+    private javax.swing.JButton btnDeleteMovies;
+    private javax.swing.JButton btnUploadMovies;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<Movie> lsMoviesList;
     // End of variables declaration//GEN-END:variables

@@ -20,12 +20,13 @@ public class MovieRepositorySql implements MovieRepository {
 
     private static final String ID_MOVIE = "IDMovie";
     private static final String TITLE = "Title";
-    private static final String DURATION = "Duration";
+    private static final String LINK = "Link";
+    private static final String DESCRIPTION = "Description";
     private static final String START_DATE = "StartDate";
     private static final String PICTURE_PATH = "PicturePath";
 
-   private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?) }";
-    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?) }";
+   private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?) }";
+    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
@@ -36,7 +37,8 @@ public class MovieRepositorySql implements MovieRepository {
             try(Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
                 stmt.setString(TITLE, movie.getTitle());
-                stmt.setInt(DURATION, movie.getDuration());
+                stmt.setString(LINK, movie.getLink());
+                stmt.setString(DESCRIPTION, movie.getDescription());
                 stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
                 stmt.setString(PICTURE_PATH, movie.getPicturePath());
                 
@@ -53,7 +55,8 @@ public class MovieRepositorySql implements MovieRepository {
                     CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
                 for (Movie movie : movies) {
                      stmt.setString(TITLE, movie.getTitle());
-                    stmt.setInt(DURATION, movie.getDuration());
+                     stmt.setString(LINK, movie.getLink());
+                    stmt.setString(DESCRIPTION, movie.getDescription());
                     stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
                     stmt.setString(PICTURE_PATH, movie.getPicturePath());
 
@@ -69,7 +72,8 @@ public class MovieRepositorySql implements MovieRepository {
             try(Connection con = dataSource.getConnection();
                     CallableStatement stmt = con.prepareCall(UPDATE_MOVIE)) {
                     stmt.setString(TITLE, movie.getTitle());
-                    stmt.setInt(DURATION, movie.getDuration());
+                    stmt.setString(LINK, movie.getLink());
+                    stmt.setString(DESCRIPTION, movie.getDescription());
                     stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
                     stmt.setString(PICTURE_PATH, movie.getPicturePath());
                     stmt.setInt(ID_MOVIE, id);
@@ -99,7 +103,8 @@ public class MovieRepositorySql implements MovieRepository {
                    return Optional.of(new Movie(
                         rs.getInt(ID_MOVIE),
                         rs.getString(TITLE),
-                        rs.getInt(DURATION),
+                        rs.getString(LINK),
+                        rs.getString(DESCRIPTION),
                         LocalDateTime.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
                         rs.getString(PICTURE_PATH)
                 ));
@@ -120,7 +125,8 @@ public class MovieRepositorySql implements MovieRepository {
                    movies.add(new Movie(
                         rs.getInt(ID_MOVIE),
                         rs.getString(TITLE),
-                        rs.getInt(DURATION),
+                        rs.getString(LINK),
+                        rs.getString(DESCRIPTION),
                         LocalDateTime.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
                         rs.getString(PICTURE_PATH)
                 ));

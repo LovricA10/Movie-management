@@ -18,7 +18,8 @@ public class MovieTableModel extends AbstractTableModel{
     private static final String[] COLUMN_NAMES = {
         "ID",
         "Title",
-        "Duration (min)",
+        "Link",
+        "Description",
         "Start Date",
         "Picture Path"
     };
@@ -50,9 +51,10 @@ public class MovieTableModel extends AbstractTableModel{
         return switch (columnIndex) {
             case 0 -> movie.getId();
             case 1 -> movie.getTitle();
-            case 2 -> movie.getDuration();
-            case 3 -> movie.getStartDate().format(Movie.DATE_FORMATTER);
-            case 4 -> movie.getPicturePath();
+            case 2 -> movie.getLink();
+            case 3 -> movie.getDescription();
+            case 4 -> movie.getStartDate().format(Movie.DATE_FORMATTER);
+            case 5 -> movie.getPicturePath();
             default -> throw new RuntimeException("No such column");
         };
         }
