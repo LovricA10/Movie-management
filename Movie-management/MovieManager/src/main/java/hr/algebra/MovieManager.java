@@ -10,6 +10,7 @@ import hr.algebra.view.EditDirectorsPanel;
 import hr.algebra.view.EditMoviesPanel;
 import hr.algebra.view.LoginForm;
 import hr.algebra.view.RegisterPanel;
+import hr.algebra.view.UploadMoviesPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -84,10 +85,12 @@ public class MovieManager extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void initPanels() {
+        tpContent.add(UPLOAD__MOVIES, new UploadMoviesPanel());
         tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
         tpContent.add(EDIT_ACTORS, new EditActorsPanel());
         tpContent.add(EDIT_DIRECTORS, new EditDirectorsPanel());
     }
+    private static final String UPLOAD__MOVIES = "Upload Movies";
     private static final String EDIT_MOVIES = "Edit Movies";
     private static final String EDIT_ACTORS = "Edit Actors";
     private static final String EDIT_DIRECTORS = "Edit Directors";

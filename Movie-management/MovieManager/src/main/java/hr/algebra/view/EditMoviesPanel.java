@@ -127,6 +127,8 @@ public class EditMoviesPanel extends javax.swing.JPanel {
 
         jLabel8.setText("Published date");
 
+        tfDate.setName("Date"); // NOI18N
+
         lbDateError.setForeground(new java.awt.Color(255, 0, 0));
         lbDateError.setText("X");
 
@@ -378,6 +380,7 @@ public class EditMoviesPanel extends javax.swing.JPanel {
             initRepository();
             initTable();
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
             ex.printStackTrace();
             Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Unrecoverable error", "Cannot initiate the form");

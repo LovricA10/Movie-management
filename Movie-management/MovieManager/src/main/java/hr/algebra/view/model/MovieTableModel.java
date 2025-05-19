@@ -66,7 +66,7 @@ public class MovieTableModel extends AbstractTableModel{
     @Override
     public Class<?> getColumnClass(int columnIndex) {
       return switch (columnIndex) {
-        case 0, 2 -> Integer.class;
+        case 0 -> Integer.class;
         default -> String.class;
     };
       
