@@ -5,8 +5,16 @@
 package hr.algebra;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import hr.algebra.model.User;
+import hr.algebra.utilities.MessageUtils;
 import hr.algebra.view.EditActorsPanel;
 import hr.algebra.view.EditDirectorsPanel;
+import hr.algebra.view.EditGenrePanel;
+import hr.algebra.view.EditMoviesPanel;
+import hr.algebra.view.LoginForm;
+import hr.algebra.view.UploadMoviesPanel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -34,9 +42,38 @@ public class MovieManager extends javax.swing.JFrame {
     private void initComponents() {
 
         tpContent = new javax.swing.JTabbedPane();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menuOptions = new javax.swing.JMenu();
+        miLogOut = new javax.swing.JMenuItem();
+        miExit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Movies");
+
+        menuOptions.setMnemonic('O');
+        menuOptions.setText("Options");
+
+        miLogOut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        miLogOut.setText("Log out");
+        miLogOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miLogOutActionPerformed(evt);
+            }
+        });
+        menuOptions.add(miLogOut);
+
+        miExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        miExit.setText("Exit");
+        miExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miExitActionPerformed(evt);
+            }
+        });
+        menuOptions.add(miExit);
+
+        jMenuBar1.add(menuOptions);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -46,12 +83,35 @@ public class MovieManager extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tpContent, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
+            .addComponent(tpContent, javax.swing.GroupLayout.DEFAULT_SIZE, 757, Short.MAX_VALUE)
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void miLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miLogOutActionPerformed
+        try {
+            if (MessageUtils.showConfirmDialog(
+                    "Log out", 
+                    "Do you really want to log out?")) {
+                    dispose();
+                    new LoginForm().setVisible(true);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(MovieManager.class.getName()).log(Level.SEVERE,null,ex);
+            MessageUtils.showErrorMessage("Error", "Can not open form, exiting...");
+            System.exit(1);
+        }
+    }//GEN-LAST:event_miLogOutActionPerformed
+
+    private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
+        if (MessageUtils.showConfirmDialog(
+                "Exit", 
+                "Do you really want to exit app?")) {
+                dispose();
+        }
+    }//GEN-LAST:event_miExitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -77,17 +137,37 @@ public class MovieManager extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu menuOptions;
+    private javax.swing.JMenuItem miExit;
+    private javax.swing.JMenuItem miLogOut;
     private javax.swing.JTabbedPane tpContent;
     // End of variables declaration//GEN-END:variables
 
     private void initPanels() {
-        /*tpContent.add(UPLOAD__MOVIES, new UploadMoviesPanel());
-        tpContent.add(EDIT_MOVIES, new EditMoviesPanel());*/
+        
+      /*  if (user.getRole()) {
+           tpContent.add(UPLOAD__MOVIES, new UploadMoviesPanel());
+           tpContent.add(EDIT_ACTORS, new EditActorsPanel());
+           tpContent.add(EDIT_DIRECTORS, new EditDirectorsPanel());
+           tpContent.add(EDIT_GENRES, new EditGenrePanel());
+        }*/
+      
+        /*
+        tpContent.add(EDIT_MOVIES, new EditMoviesPanel());after finish roles*/
+
+       // tpContent.add(UPLOAD__MOVIES, new UploadMoviesPanel());
+       // tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
         tpContent.add(EDIT_ACTORS, new EditActorsPanel());
         tpContent.add(EDIT_DIRECTORS, new EditDirectorsPanel());
+        tpContent.add(EDIT_GENRES, new EditGenrePanel());
+           
+        
     }
+    private static User user;
     private static final String UPLOAD__MOVIES = "Upload Movies";
     private static final String EDIT_MOVIES = "Edit Movies";
     private static final String EDIT_ACTORS = "Edit Actors";
     private static final String EDIT_DIRECTORS = "Edit Directors";
+    private static final String EDIT_GENRES = "Edit Genres";
 }

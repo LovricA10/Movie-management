@@ -21,4 +21,6 @@ public interface UserRepository {
     void deleteUser(int id) throws Exception;
     Optional<User> selectUser(int id) throws Exception;
     List<User> selectUsers() throws Exception;
+
+    //public boolean checkIfUserNameExists(String text);
 }

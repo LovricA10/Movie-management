@@ -448,31 +448,33 @@ public class EditActorsPanel extends javax.swing.JPanel {
             if (optionalActor.isPresent()) {
                 selectedActor = optionalActor.get();
                 fillForm(selectedActor);
+                
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             Logger.getLogger(EditActorsPanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Error", "Unable to show actor");
         }
     }
 
     private void fillForm(Actor actor) throws Exception{
+         if (actor.getPicturePath() != null && Files.exists(Paths.get(actor.getPicturePath()))) {
+            tfPicturePath.setText(actor.getPicturePath());
+            setIcon(lbIcon, new File(actor.getPicturePath()));
+         }
+         else {
+             lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png")));
+         }
         tfName.setText(actor.getName());
         tfLastName.setText(actor.getLastName());
         tfDateBirth.setText(actor.getDateBirth() != null
-                ? actor.getDateBirth().format(Actor.DATE_FORMATTER)
-                : "");
-        if (actor.getPicturePath() != null && Files.exists(Paths.get(actor.getPicturePath()))) {
-            tfPicturePath.setText(actor.getPicturePath());
-            setIcon(lbIcon, new File(actor.getPicturePath()));
-        } else {
-            lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png")));
-        }
+                ? actor.getDateBirth().format(actor.DATE_FORMATTER) : "");
 
     }
 
-    private void loadModel(List<Movie> movies, DefaultListModel<Movie> model, JList<Movie> list) {
+    private void loadModel(List<Actor> actors, DefaultListModel<Actor> model, JList<Actor> list) {
         model.clear();
-        movies.forEach(model::addElement);
+        actors.forEach(model::addElement);
         list.setModel(model);
     }
 

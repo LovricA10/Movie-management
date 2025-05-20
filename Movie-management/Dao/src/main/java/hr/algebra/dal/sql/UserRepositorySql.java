@@ -32,6 +32,7 @@ public class UserRepositorySql implements UserRepository{
     private static final String DELETE_USER = "{ CALL deleteUser(?) }";
     private static final String SELECT_USER = "{ CALL selectUser(?) }";
     private static final String SELECT_USERS = "{ CALL selectUsers }";
+   // private static final String CHECK_IF_USERNAME_EXISTS = "{ CALL checkIfUsernameExists (?) }";
 
     @Override
     public int createUser(User user) throws Exception {
@@ -40,9 +41,10 @@ public class UserRepositorySql implements UserRepository{
              CallableStatement stmt = con.prepareCall(CREATE_USER)) {
 
             stmt.setString(USERNAME, user.getUsername());
-            stmt.setString(EMAIL, user.getEmail());
+            stmt.setString(EMAIL, user.getEmail()); // remove this
             stmt.setString(PASSWORD, user.getPassword());
-            stmt.setString(ROLE, user.getRole());
+             //stmt.setBoolean(ROLE, data.getRole());
+             stmt.setString(ROLE, user.getRole());
             stmt.registerOutParameter(ID_USER, Types.INTEGER);
 
             stmt.executeUpdate();
@@ -58,8 +60,9 @@ public class UserRepositorySql implements UserRepository{
 
             for (User user : users) {
                 stmt.setString(USERNAME, user.getUsername());
-                stmt.setString(EMAIL, user.getEmail());
+                stmt.setString(EMAIL, user.getEmail()); // remove this
                 stmt.setString(PASSWORD, user.getPassword());
+                  //stmt.setBoolean(ROLE, data.getRole());
                 stmt.setString(ROLE, user.getRole());
                 stmt.registerOutParameter(ID_USER, Types.INTEGER);
 
@@ -75,8 +78,9 @@ public class UserRepositorySql implements UserRepository{
              CallableStatement stmt = con.prepareCall(UPDATE_USER)) {
 
             stmt.setString(USERNAME, data.getUsername());
-            stmt.setString(EMAIL, data.getEmail());
+            stmt.setString(EMAIL, data.getEmail()); // remove this
             stmt.setString(PASSWORD, data.getPassword());
+            //stmt.setBoolean(ROLE, data.getRole());
             stmt.setString(ROLE, data.getRole());
             stmt.setInt(ID_USER, id);
 
@@ -107,8 +111,9 @@ public class UserRepositorySql implements UserRepository{
                     return Optional.of(new User(
                             rs.getInt(ID_USER),
                             rs.getString(USERNAME),
-                            rs.getString(EMAIL),
+                            rs.getString(EMAIL),// remove this
                             rs.getString(PASSWORD),
+                             // rs.getBoolean(ROLE)
                             rs.getString(ROLE)
                     ));
                 }
@@ -129,12 +134,33 @@ public class UserRepositorySql implements UserRepository{
                 users.add(new User(
                         rs.getInt(ID_USER),
                         rs.getString(USERNAME),
-                        rs.getString(EMAIL),
+                        rs.getString(EMAIL), // remove this
                         rs.getString(PASSWORD),
+                       // rs.getBoolean(ROLE)
                         rs.getString(ROLE)
                 ));
             }
         }
         return users;
     }
+
+ /*   @Override
+   public boolean checkIfUserNameExists(String username) {
+    DataSource dataSource = DataSourceSingleton.getInstance();
+    try (Connection con = dataSource.getConnection();
+         CallableStatement stmt = con.prepareCall(CHECK_IF_USERNAME_EXISTS)) {
+
+        stmt.setString(USERNAME, username);
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            return rs.next();
+        }
+
+    } catch (Exception ex) {
+        ex.printStackTrace(); 
+    }
+
+    return false;
+}*/
+    
 }

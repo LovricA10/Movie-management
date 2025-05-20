@@ -4,9 +4,6 @@
  */
 package hr.algebra.model;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 /**
  *
  * @author lecturer
@@ -17,12 +14,12 @@ public final class User {
     private String username;
     private String email;
     private String password;
-    private String role;
+    private /*Boolean*/ String role;
 
     
     public User(){
     }
-    public User(int id, String username, String email, String password, String role) {
+    public User(int id, String username, String email, String password, /*Boolean*/ String role) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -31,7 +28,7 @@ public final class User {
     }
     
     
-    public User(String username, String email, String password, String role) {
+    public User(String username, String email, String password, /*Boolean*/ String role) {
         this.username = username;
         this.email = email;
         this.password = password;
@@ -39,6 +36,11 @@ public final class User {
         
         
         
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 
     public int getId() {
@@ -73,11 +75,11 @@ public final class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public /*Boolean*/ String getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(/*Boolean*/ String role) {
         this.role = role;
     }
     

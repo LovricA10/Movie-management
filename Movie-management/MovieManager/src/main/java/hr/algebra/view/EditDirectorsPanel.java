@@ -469,9 +469,9 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
 
     }
 
-    private void loadModel(List<Movie> movies, DefaultListModel<Movie> model, JList<Movie> list) {
+    private void loadModel(List<Director> directors, DefaultListModel<Director> model, JList<Director> list) {
         model.clear();
-        movies.forEach(model::addElement);
+        directors.forEach(model::addElement);
         list.setModel(model);
     }
 

@@ -103,7 +103,7 @@ public class ActorRepositorySql implements ActorRepository{
                             rs.getInt(ID_ACTOR), 
                             rs.getString(FIRST_NAME), 
                             rs.getString(LAST_NAME),
-                            LocalDate.parse(ID_ACTOR, Actor.DATE_FORMATTER),
+                            LocalDate.parse(rs.getString(BIRTHDATE), Actor.DATE_FORMATTER),
                             rs.getString(PICTURE_PATH)
                 ));
             }
