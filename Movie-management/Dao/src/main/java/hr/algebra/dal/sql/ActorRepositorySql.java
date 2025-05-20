@@ -10,7 +10,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Types;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +23,9 @@ import javax.sql.DataSource;
 public class ActorRepositorySql implements ActorRepository{
     
     private static final String ID_ACTOR = "IDActor";
-    private static final String FIRST_NAME = "FirstName";
+    private static final String FIRST_NAME = "Name";
     private static final String LAST_NAME = "LastName";
-    private static final String BIRTHDATE = "BirthDate";
+    private static final String BIRTHDATE = "DateBirth";
     private static final String PICTURE_PATH = "PicturePath";
 
     private static final String CREATE_ACTOR = "{ CALL createActor(?,?,?,?,?) }";
@@ -103,7 +103,7 @@ public class ActorRepositorySql implements ActorRepository{
                             rs.getInt(ID_ACTOR), 
                             rs.getString(FIRST_NAME), 
                             rs.getString(LAST_NAME),
-                            LocalDateTime.parse(ID_ACTOR, Actor.DATE_FORMATTER),
+                            LocalDate.parse(ID_ACTOR, Actor.DATE_FORMATTER),
                             rs.getString(PICTURE_PATH)
                 ));
             }
@@ -125,7 +125,7 @@ public class ActorRepositorySql implements ActorRepository{
                         rs.getInt(ID_ACTOR),
                         rs.getString(FIRST_NAME),
                         rs.getString(LAST_NAME),
-                        LocalDateTime.parse(rs.getString(BIRTHDATE), Actor.DATE_FORMATTER),
+                        LocalDate.parse(rs.getString(BIRTHDATE), Actor.DATE_FORMATTER),
                         rs.getString(PICTURE_PATH)
                 ));
             }

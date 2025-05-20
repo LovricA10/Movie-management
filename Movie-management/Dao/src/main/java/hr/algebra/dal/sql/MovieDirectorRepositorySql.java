@@ -26,6 +26,7 @@ public class MovieDirectorRepositorySql implements MovieDirectorRepository{
     private static final String CREATE_MOVIE_DIRECTOR = "{ CALL createMovieDirector(?, ?, ?) }";
     private static final String DELETE_MOVIE_DIRECTOR = "{ CALL deleteMovieDirector(?) }";
     private static final String SELECT_MOVIE_DIRECTORS = "{ CALL selectMovieDirectors }";
+    private static final String DELETE_MOVIE_DIRECTOR_BY_MOVIE_AND_DIRECTOR = "{ CALL deleteMovieDirectorByMovieAndDirector(?, ?) }";
 
     @Override
     public int createMovieDirector(MovieDirector movieDirector) throws Exception {
@@ -86,5 +87,17 @@ public class MovieDirectorRepositorySql implements MovieDirectorRepository{
             }
         }
         return movieDirectors;
+    }
+
+    @Override
+    public void deleteByMovieAndDirector(int movieId, int directorId) throws Exception {
+         DataSource dataSource = DataSourceSingleton.getInstance();
+            try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(DELETE_MOVIE_DIRECTOR_BY_MOVIE_AND_DIRECTOR)) {
+
+                stmt.setInt(MOVIE_ID, movieId);
+                stmt.setInt(DIRECTOR_ID, directorId);
+                stmt.executeUpdate();
+    }
     }
 }

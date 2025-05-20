@@ -473,7 +473,7 @@ public class EditMoviesPanel extends javax.swing.JPanel {
 
     private void initRepository() throws Exception{
         //List<Movie> movies = repository.selectMovies();
-        //movies.forEach(model::addElement);
+        //movies.forEach(moviesTableModel::addElement);
         repository = RepositoryFactory.getRepository(MovieRepository.class);
         //System.out.println("Repository instance: " + repository);
     }

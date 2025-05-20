@@ -10,7 +10,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Types;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,9 +23,9 @@ import javax.sql.DataSource;
 public class DirectorRepositorySql implements DirectorRepository{
  
     private static final String ID_DIRECTOR = "IDDirector";
-    private static final String FIRST_NAME = "FirstName";
+    private static final String FIRST_NAME = "Name";
     private static final String LAST_NAME = "LastName";
-    private static final String BIRTHDATE = "BirthDate";
+    private static final String BIRTHDATE = "DateBirth";
     private static final String PICTURE_PATH = "PicturePath";
 
     private static final String CREATE_DIRECTOR = "{ CALL createDirector(?,?,?,?,?) }";
@@ -68,15 +68,15 @@ public class DirectorRepositorySql implements DirectorRepository{
     }
 
     @Override
-    public void updateDirector(int id, Director data) throws Exception {
+    public void updateDirector(int id, Director director) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
              CallableStatement stmt = con.prepareCall(UPDATE_DIRECTOR)) {
 
-            stmt.setString(FIRST_NAME, data.getName());
-            stmt.setString(LAST_NAME, data.getLastName());
-            stmt.setString(BIRTHDATE, data.getDateBirth().format(Director.DATE_FORMATTER));
-            stmt.setString(PICTURE_PATH, data.getPicturePath());
+            stmt.setString(FIRST_NAME, director.getName());
+            stmt.setString(LAST_NAME, director.getLastName());
+            stmt.setString(BIRTHDATE, director.getDateBirth().format(Director.DATE_FORMATTER));
+            stmt.setString(PICTURE_PATH, director.getPicturePath());
             stmt.setInt(ID_DIRECTOR, id);
 
             stmt.executeUpdate();
@@ -107,7 +107,7 @@ public class DirectorRepositorySql implements DirectorRepository{
                             rs.getInt(ID_DIRECTOR),
                             rs.getString(FIRST_NAME),
                             rs.getString(LAST_NAME),
-                            LocalDateTime.parse(rs.getString(BIRTHDATE), Director.DATE_FORMATTER),
+                            LocalDate.parse(rs.getString(BIRTHDATE), Director.DATE_FORMATTER),
                             rs.getString(PICTURE_PATH)
                     ));
                 }
@@ -129,7 +129,7 @@ public class DirectorRepositorySql implements DirectorRepository{
                         rs.getInt(ID_DIRECTOR),
                         rs.getString(FIRST_NAME),
                         rs.getString(LAST_NAME),
-                        LocalDateTime.parse(rs.getString(BIRTHDATE), Director.DATE_FORMATTER),
+                        LocalDate.parse(rs.getString(BIRTHDATE), Director.DATE_FORMATTER),
                         rs.getString(PICTURE_PATH)
                 ));
             }

@@ -7,10 +7,6 @@ package hr.algebra;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import hr.algebra.view.EditActorsPanel;
 import hr.algebra.view.EditDirectorsPanel;
-import hr.algebra.view.EditMoviesPanel;
-import hr.algebra.view.LoginForm;
-import hr.algebra.view.RegisterPanel;
-import hr.algebra.view.UploadMoviesPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -85,8 +81,8 @@ public class MovieManager extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void initPanels() {
-        tpContent.add(UPLOAD__MOVIES, new UploadMoviesPanel());
-        tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
+        /*tpContent.add(UPLOAD__MOVIES, new UploadMoviesPanel());
+        tpContent.add(EDIT_MOVIES, new EditMoviesPanel());*/
         tpContent.add(EDIT_ACTORS, new EditActorsPanel());
         tpContent.add(EDIT_DIRECTORS, new EditDirectorsPanel());
     }

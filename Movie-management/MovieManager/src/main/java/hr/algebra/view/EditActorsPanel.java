@@ -4,7 +4,33 @@
  */
 package hr.algebra.view;
 
+import hr.algebra.dal.ActorRepository;
+import hr.algebra.dal.RepositoryFactory;
+import hr.algebra.model.Actor;
 import hr.algebra.model.Movie;
+import hr.algebra.utilities.FileUtils;
+import hr.algebra.utilities.IconUtils;
+import hr.algebra.utilities.MessageUtils;
+import hr.algebra.view.model.ActorTableModel;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.text.JTextComponent;
 
 /**
  *
@@ -32,19 +58,26 @@ public class EditActorsPanel extends javax.swing.JPanel {
         tbActors = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        btnUpdate = new javax.swing.JButton();
-        btnAdd = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
+        btnUpdateActor = new javax.swing.JButton();
+        btnAddActor = new javax.swing.JButton();
+        btnDeleteActor = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         tfName = new javax.swing.JTextField();
         tfDateBirth = new javax.swing.JTextField();
-        tfLastName1 = new javax.swing.JTextField();
-        btnAddActorMovies = new javax.swing.JButton();
-        btnRemoveMovie = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        lsAllMovies = new javax.swing.JList<>();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        lsActorMovies = new javax.swing.JList<>();
+        tfLastName = new javax.swing.JTextField();
+        lbNameError = new javax.swing.JLabel();
+        lbLastNameError = new javax.swing.JLabel();
+        lbDateError = new javax.swing.JLabel();
+        lbIcon = new javax.swing.JLabel();
+        btnChoose = new javax.swing.JButton();
+        tfPicturePath = new javax.swing.JTextField();
+        lbPicturePathError = new javax.swing.JLabel();
+
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
 
         tbActors.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -57,29 +90,67 @@ public class EditActorsPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tbActors.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbActorsMouseClicked(evt);
+            }
+        });
+        tbActors.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tbActorsKeyReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbActors);
 
         jLabel4.setText("First name");
 
         jLabel8.setText("Last name");
 
-        btnUpdate.setText("Update");
+        btnUpdateActor.setText("Update");
+        btnUpdateActor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActorActionPerformed(evt);
+            }
+        });
 
-        btnAdd.setText("Add");
+        btnAddActor.setText("Add");
+        btnAddActor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActorActionPerformed(evt);
+            }
+        });
 
-        btnDelete.setBackground(new java.awt.Color(255, 51, 51));
-        btnDelete.setForeground(new java.awt.Color(255, 255, 255));
-        btnDelete.setText("Delete");
+        btnDeleteActor.setBackground(new java.awt.Color(255, 51, 51));
+        btnDeleteActor.setForeground(new java.awt.Color(255, 255, 255));
+        btnDeleteActor.setText("Delete");
+        btnDeleteActor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActorActionPerformed(evt);
+            }
+        });
 
         jLabel9.setText("Date of birth:");
 
-        btnAddActorMovies.setText("Add");
+        lbNameError.setForeground(new java.awt.Color(255, 0, 0));
+        lbNameError.setText("X");
 
-        btnRemoveMovie.setText("Remove");
+        lbLastNameError.setForeground(new java.awt.Color(255, 0, 0));
+        lbLastNameError.setText("X");
 
-        jScrollPane4.setViewportView(lsAllMovies);
+        lbDateError.setForeground(new java.awt.Color(255, 0, 0));
+        lbDateError.setText("X");
 
-        jScrollPane5.setViewportView(lsActorMovies);
+        lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png"))); // NOI18N
+
+        btnChoose.setText("Choose picture");
+        btnChoose.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChooseActionPerformed(evt);
+            }
+        });
+
+        lbPicturePathError.setForeground(new java.awt.Color(255, 0, 0));
+        lbPicturePathError.setText("X");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -88,92 +159,339 @@ public class EditActorsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(btnRemoveMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(lbPicturePathError, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(tfPicturePath, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnChoose))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnDeleteActor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(btnAddActor, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(45, 45, 45)
-                                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(btnUpdateActor, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(tfName)
-                                    .addComponent(tfLastName1)
+                                    .addComponent(tfLastName)
                                     .addComponent(tfDateBirth))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnAddActorMovies, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(172, 172, 172))))
+                                    .addComponent(lbNameError, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lbLastNameError, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lbDateError, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(89, 89, 89)
+                                .addComponent(lbIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 279, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbNameError))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfLastName1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfLastName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbLastNameError))
                         .addGap(18, 18, 18)
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tfDateBirth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(23, 23, 23))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAddActorMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(tfDateBirth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbDateError))
+                        .addGap(23, 23, 23)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAddActor, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnUpdateActor, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(31, 31, 31)
-                        .addComponent(btnDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnRemoveMovie, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDeleteActor, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(59, Short.MAX_VALUE)
+                        .addComponent(lbIcon)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnChoose)
+                            .addComponent(tfPicturePath, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbPicturePathError))
+                        .addGap(18, 18, 18)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnAddActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActorActionPerformed
+        if (!formValid()) return;
+
+       try {
+            String localPicturePath = uploadPicture();
+            Actor actor = new Actor(
+                    tfName.getText().trim(),
+                    tfLastName.getText().trim(),
+                    LocalDate.parse(tfDateBirth.getText().trim(), Actor.DATE_FORMATTER),
+                    localPicturePath
+            );
+            actorRepository.createActor(actor);
+            actorsTableModel.setActors(actorRepository.selectActors());
+            clearForm();
+            MessageUtils.showInformationMessage("Success", "Actor added!");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Logger.getLogger(EditActorsPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Unable to add actor!");
+        }
+       
+    }//GEN-LAST:event_btnAddActorActionPerformed
+
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        init();
+    }//GEN-LAST:event_formComponentShown
+
+    private void btnUpdateActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActorActionPerformed
+         if (selectedActor == null) {
+            MessageUtils.showInformationMessage("Wrong operation", "Please choose a actor to update");
+            return;
+        }
+
+        if (!formValid()) {
+            return;
+        }
+
+        try {
+            if (!tfPicturePath.getText().trim().equals(selectedActor.getPicturePath())) {
+                if (selectedActor.getPicturePath() != null) {
+                    Files.deleteIfExists(Paths.get(selectedActor.getPicturePath()));
+                }
+                String localPicturePath = uploadPicture();
+                selectedActor.setPicturePath(localPicturePath);
+            }
+            selectedActor.setName(tfName.getText().trim());
+            selectedActor.setLastName(tfLastName.getText().trim());
+            selectedActor.setDateBirth(LocalDate.parse(tfDateBirth.getText().trim(), Actor.DATE_FORMATTER));
+
+            actorRepository.updateActor(selectedActor.getId(), selectedActor);
+            actorsTableModel.setActors(actorRepository.selectActors());
+            clearForm();
+            MessageUtils.showInformationMessage("Success", "Actor updated!");
+        
+    }catch (DateTimeException ex) {
+            lbDateError.setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(EditActorsPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Unable to update actor!");
+        }
+    }//GEN-LAST:event_btnUpdateActorActionPerformed
+
+    private void btnDeleteActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActorActionPerformed
+        if (selectedActor == null) {
+            MessageUtils.showInformationMessage("Wrong operation", "Please choose a actor to delete");
+            return;
+        }
+        if (MessageUtils.showConfirmDialog("Delete actor", "Are you sure?")) {
+            try {
+                if (selectedActor.getPicturePath() != null) {
+                    Files.deleteIfExists(Paths.get(selectedActor.getPicturePath()));
+                }
+                actorRepository.deleteActor(selectedActor.getId());
+                actorsTableModel.setActors(actorRepository.selectActors());
+                clearForm();
+                MessageUtils.showInformationMessage("Success", "Actor deleted!");
+            } catch (Exception ex) {
+                Logger.getLogger(EditActorsPanel.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage("Error", "Unable to delete actor!");
+            }
+        }
+    }//GEN-LAST:event_btnDeleteActorActionPerformed
+
+    private void tbActorsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbActorsMouseClicked
+        showActor();
+    }//GEN-LAST:event_tbActorsMouseClicked
+
+    private void tbActorsKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbActorsKeyReleased
+        showActor();
+    }//GEN-LAST:event_tbActorsKeyReleased
+
+    private void btnChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseActionPerformed
+         Optional<File> optionalFile = FileUtils.uploadFile("Images", "jpg", "jpeg", "png");
+            optionalFile.ifPresent(file -> {
+            tfPicturePath.setText(file.getAbsolutePath());
+            setIcon(lbIcon, file);
+        });
+    }//GEN-LAST:event_btnChooseActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnAddActorMovies;
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnRemoveMovie;
-    private javax.swing.JButton btnUpdate;
+    private javax.swing.JButton btnAddActor;
+    private javax.swing.JButton btnChoose;
+    private javax.swing.JButton btnDeleteActor;
+    private javax.swing.JButton btnUpdateActor;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JList<Movie> lsActorMovies;
-    private javax.swing.JList<Movie> lsAllMovies;
+    private javax.swing.JLabel lbDateError;
+    private javax.swing.JLabel lbIcon;
+    private javax.swing.JLabel lbLastNameError;
+    private javax.swing.JLabel lbNameError;
+    private javax.swing.JLabel lbPicturePathError;
     private javax.swing.JTable tbActors;
     private javax.swing.JTextField tfDateBirth;
-    private javax.swing.JTextField tfLastName1;
+    private javax.swing.JTextField tfLastName;
     private javax.swing.JTextField tfName;
+    private javax.swing.JTextField tfPicturePath;
     // End of variables declaration//GEN-END:variables
+
+    private static final String DIR = "assets";
+    private Map<JTextComponent, JLabel> validationMap;
+    private Actor selectedActor;
+    private ActorTableModel actorsTableModel;
+    private ActorRepository actorRepository;
+    
+    private void init() {
+        try {
+            initValidation();
+            hideErrors();
+            initRepository();
+            initTable();
+        } catch (Exception ex) {
+            Logger.getLogger(EditActorsPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Unrecoverable error", "Cannot initiate the form");
+            System.exit(1);
+        }
+    }
+
+    private void initValidation() {
+        validationMap = new LinkedHashMap<>();
+        addValidationPair(tfName, lbNameError);
+        addValidationPair(tfLastName, lbLastNameError);
+        addValidationPair(tfDateBirth, lbDateError);
+        addValidationPair(tfPicturePath, lbPicturePathError);
+    }
+
+    private void addValidationPair(JTextField field, JLabel errorLabel) {
+        validationMap.put(field, errorLabel);
+    }
+
+    private void hideErrors() {
+        validationMap.values().forEach(label -> label.setVisible(false));
+    }
+
+    private void initRepository() throws Exception{
+         actorRepository = RepositoryFactory.getRepository(ActorRepository.class);
+    }
+
+    private void initTable() throws Exception{
+        tbActors.setRowHeight(25);
+        tbActors.setAutoCreateRowSorter(true);
+        tbActors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        actorsTableModel = new ActorTableModel(actorRepository.selectActors());
+        tbActors.setModel(actorsTableModel);
+    }
+
+    private boolean formValid() {
+        hideErrors();
+        boolean ok = true;
+        
+        for (Map.Entry<JTextComponent, JLabel> entry : validationMap.entrySet()) {
+        JTextComponent field = entry.getKey();
+        JLabel errorLabel = entry.getValue();
+        String text = field.getText().trim();
+        boolean isEmpty = text.isEmpty();
+       
+        ok &= !isEmpty;
+        errorLabel.setVisible(isEmpty);
+
+       if (field == tfDateBirth && !isEmpty) {
+                try {
+                    LocalDate.parse(text, Actor.DATE_FORMATTER);
+                } catch (Exception e) {
+                    ok = false;
+                    errorLabel.setVisible(true);
+                }
+            }
+        }
+
+        return ok;
+}
+
+    private void clearForm() {
+         hideErrors();
+        validationMap.keySet().forEach(field -> field.setText(""));
+        lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png")));
+        selectedActor = null;
+    }
+
+    private void showActor() {
+        clearForm();
+        int selectedRow = tbActors.getSelectedRow();
+        int rowIndex = tbActors.convertRowIndexToModel(selectedRow);
+        int selectedActorId = (int) actorsTableModel.getValueAt(rowIndex, 0);
+
+        try {
+            Optional<Actor> optionalActor = actorRepository.selectActor(selectedActorId);
+            if (optionalActor.isPresent()) {
+                selectedActor = optionalActor.get();
+                fillForm(selectedActor);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(EditActorsPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Unable to show actor");
+        }
+    }
+
+    private void fillForm(Actor actor) throws Exception{
+        tfName.setText(actor.getName());
+        tfLastName.setText(actor.getLastName());
+        tfDateBirth.setText(actor.getDateBirth() != null
+                ? actor.getDateBirth().format(Actor.DATE_FORMATTER)
+                : "");
+        if (actor.getPicturePath() != null && Files.exists(Paths.get(actor.getPicturePath()))) {
+            tfPicturePath.setText(actor.getPicturePath());
+            setIcon(lbIcon, new File(actor.getPicturePath()));
+        } else {
+            lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png")));
+        }
+
+    }
+
+    private void loadModel(List<Movie> movies, DefaultListModel<Movie> model, JList<Movie> list) {
+        model.clear();
+        movies.forEach(model::addElement);
+        list.setModel(model);
+    }
+
+    private void setIcon(JLabel label, File file) {
+         try {
+            label.setIcon(IconUtils.createIcon(file, label.getWidth(), label.getHeight()));
+        } catch (IOException ex) {
+            Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Unable to set icon!");
+        }
+    }
+
+    private String uploadPicture() throws IOException {
+        String picturePath = tfPicturePath.getText();
+        String ext = picturePath.substring(picturePath.lastIndexOf("."));
+        String pictureName = UUID.randomUUID() + ext;
+        String localPicturePath = DIR + File.separator + pictureName;
+        
+        FileUtils.copy(picturePath, localPicturePath);
+        return localPicturePath;
+    }
 }

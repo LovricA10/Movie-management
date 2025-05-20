@@ -104,6 +104,7 @@ public class MovieParser {
                         if (tag.isPresent() && tag.get().equals(Tag.ITEM)) {
                             movie = new Movie();
                             movies.add(movie);
+                            
                         }
                     }
                          case XMLStreamConstants.CHARACTERS -> {
@@ -129,7 +130,7 @@ public class MovieParser {
                             }
                         } 
                         case ENC -> {
-                            if (startElement != null) {
+                            if (startElement != null && movie.getPicturePath() == null) {
                                 Attribute att = startElement.getAttributeByName(new QName(ATTRIBUTE_URL));
                                 if (att != null) {
                                     uploadPicture(movie,att.getValue());
@@ -138,8 +139,8 @@ public class MovieParser {
                         }
                         case PUB_DATE -> {
                              if (!data.isEmpty()) {
-                                movie.setStartDate(
-                                LocalDateTime.parse(data,DateTimeFormatter.RFC_1123_DATE_TIME));    
+                                 LocalDateTime publishedDate = LocalDateTime.parse(data,DateTimeFormatter.RFC_1123_DATE_TIME);
+                                 movie.setStartDate(publishedDate);   
                             }
                         }
                     }

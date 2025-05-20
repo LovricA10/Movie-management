@@ -19,7 +19,7 @@ public class DirectorTableModel extends AbstractTableModel{
         "Name",
         "Last Name",
         "Date of Birth",
-        "Picture Path"
+        "Picture path"
     };
 
     private List<Director> directors;

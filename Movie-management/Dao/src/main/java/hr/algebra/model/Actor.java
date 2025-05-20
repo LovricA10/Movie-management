@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package hr.algebra.model;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -15,13 +15,13 @@ public final class Actor {
     private int id;
     private String name;
     private String lastName;
-    private LocalDateTime dateBirth;
+    private LocalDate dateBirth;
     private String picturePath;
 
     public Actor(){
         
     }
-    public Actor(int id, String name, String lastName, LocalDateTime dateBirth, String picturePath) {
+    public Actor(int id, String name, String lastName, LocalDate dateBirth, String picturePath) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -29,7 +29,7 @@ public final class Actor {
         this.picturePath = picturePath;
     }
 
-    public Actor(String name, String lastName, LocalDateTime dateBirth, String picturePath) {
+    public Actor(String name, String lastName, LocalDate dateBirth, String picturePath) {
         this.name = name;
         this.lastName = lastName;
         this.dateBirth = dateBirth;
@@ -60,11 +60,11 @@ public final class Actor {
         this.lastName = lastName;
     }
 
-    public LocalDateTime getDateBirth() {
+    public LocalDate getDateBirth() {
         return dateBirth;
     }
 
-    public void setDateBirth(LocalDateTime dateBirth) {
+    public void setDateBirth(LocalDate dateBirth) {
         this.dateBirth = dateBirth;
     }
 

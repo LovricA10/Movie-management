@@ -25,12 +25,13 @@ public class MovieRepositorySql implements MovieRepository {
     private static final String START_DATE = "StartDate";
     private static final String PICTURE_PATH = "PicturePath";
 
-   private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?) }";
+   private static final String  CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?) }";
     private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
-
+    private static final String SELECT_MOVIES_BY_DIRECTOR_ID = "{ CALL selectMoviesByDirectorId(?) }";
+    
     @Override
     public int createMovie(Movie movie) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
@@ -135,6 +136,30 @@ public class MovieRepositorySql implements MovieRepository {
         }
     }
   }
+
+    @Override
+    public List<Movie> selectMoviesByDirectorId(int directorId) throws Exception {
+         List<Movie> movies = new ArrayList<>();
+        DataSource dataSource = DataSourceSingleton.getInstance();
+    
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_MOVIES_BY_DIRECTOR_ID)) {
+            stmt.setInt(ID_MOVIE, directorId);
+             try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                movies.add(new Movie(
+                    rs.getInt(ID_MOVIE),
+                    rs.getString(TITLE),
+                    rs.getString(LINK),
+                    rs.getString(DESCRIPTION),
+                    LocalDateTime.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
+                    rs.getString(PICTURE_PATH)
+                ));
+            }
+        }
+     }
+        return movies;
+    }
 }
    
      

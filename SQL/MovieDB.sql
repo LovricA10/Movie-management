@@ -76,12 +76,15 @@ GO
 -- Director table
 CREATE TABLE Director (
     IDDirector INT PRIMARY KEY IDENTITY,
-    Name NVARCHAR(100),
+    [Name] NVARCHAR(100),
     LastName NVARCHAR(100),
     DateBirth NVARCHAR(90),
     PicturePath NVARCHAR(200)
 )
 GO
+
+ALTER TABLE Director
+DROP COLUMN PicturePath
 
 -- MovieDirector table (many-to-many)
 CREATE TABLE MovieDirector (
@@ -218,6 +221,24 @@ BEGIN
     SELECT * FROM Movie
 END
 GO
+CREATE PROCEDURE selectMoviesByDirectorId
+    @DirectorID INT
+AS
+BEGIN
+    SELECT 
+        m.IDMovie,
+        m.Title,
+        m.Link,
+        m.Description,
+        m.StartDate,
+        m.PicturePath
+    FROM Movie m
+    INNER JOIN MovieDirector md ON m.IDMovie = md.MovieID
+    WHERE md.DirectorID = @DirectorID
+END
+GO
+
+
 
 -- GENRE
 CREATE PROCEDURE createGenre
@@ -317,32 +338,29 @@ END
 GO
 
 -- DIRECTOR
-CREATE PROCEDURE createDirector
+CREATE OR ALTER PROCEDURE createDirector
     @Name NVARCHAR(100),
     @LastName NVARCHAR(100),
     @DateBirth NVARCHAR(90),
-    @PicturePath NVARCHAR(200),
     @IDDirector INT OUTPUT
 AS
 BEGIN
-    INSERT INTO Director VALUES (@Name, @LastName, @DateBirth, @PicturePath)
+    INSERT INTO Director VALUES (@Name, @LastName, @DateBirth)
     SET @IDDirector = SCOPE_IDENTITY()
 END
 GO
 
-CREATE PROCEDURE updateDirector
+CREATE OR ALTER PROCEDURE updateDirector
     @Name NVARCHAR(100),
     @LastName NVARCHAR(100),
     @DateBirth NVARCHAR(90),
-    @PicturePath NVARCHAR(200),
     @IDDirector INT
 AS
 BEGIN
     UPDATE Director SET
         Name = @Name,
         LastName = @LastName,
-        DateBirth = @DateBirth,
-        PicturePath = @PicturePath
+        DateBirth = @DateBirth
     WHERE IDDirector = @IDDirector
 END
 GO
@@ -505,5 +523,13 @@ CREATE PROCEDURE selectMovieDirectors
 AS
 BEGIN
     SELECT * FROM MovieDirector
+END
+GO
+CREATE PROCEDURE deleteMovieDirectorByMovieAndDirector
+    @MovieID INT,
+    @DirectorID INT
+AS
+BEGIN
+    DELETE FROM MovieDirector WHERE MovieID = @MovieID AND DirectorID = @DirectorID
 END
 GO

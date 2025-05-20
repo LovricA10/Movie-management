@@ -16,4 +16,5 @@ public interface MovieDirectorRepository {
     void createMovieDirectors(List<MovieDirector> movieDirectors) throws Exception;
     void deleteMovieDirector(int id) throws Exception;
     List<MovieDirector> selectMovieDirectors() throws Exception;
+    void deleteByMovieAndDirector(int movieId, int directorId) throws Exception;
 }
