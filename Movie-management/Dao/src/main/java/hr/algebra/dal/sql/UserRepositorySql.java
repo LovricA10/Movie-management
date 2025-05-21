@@ -5,6 +5,7 @@
 package hr.algebra.dal.sql;
 
 import hr.algebra.dal.UserRepository;
+import hr.algebra.model.Role;
 import hr.algebra.model.User;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -23,16 +24,14 @@ public class UserRepositorySql implements UserRepository{
     
     private static final String ID_USER = "IDUser";
     private static final String USERNAME = "Username";
-    private static final String EMAIL = "Email";
     private static final String PASSWORD = "Password";
     private static final String ROLE = "Role";
 
-    private static final String CREATE_USER = "{ CALL createUser(?, ?, ?, ?, ?) }";
-    private static final String UPDATE_USER = "{ CALL updateUser(?, ?, ?, ?, ?) }";
+    private static final String CREATE_USER = "{ CALL createUser(?, ?, ?, ?) }";
+    private static final String UPDATE_USER = "{ CALL updateUser(?, ?, ?, ?) }";
     private static final String DELETE_USER = "{ CALL deleteUser(?) }";
     private static final String SELECT_USER = "{ CALL selectUser(?) }";
     private static final String SELECT_USERS = "{ CALL selectUsers }";
-   // private static final String CHECK_IF_USERNAME_EXISTS = "{ CALL checkIfUsernameExists (?) }";
 
     @Override
     public int createUser(User user) throws Exception {
@@ -41,10 +40,8 @@ public class UserRepositorySql implements UserRepository{
              CallableStatement stmt = con.prepareCall(CREATE_USER)) {
 
             stmt.setString(USERNAME, user.getUsername());
-            stmt.setString(EMAIL, user.getEmail()); // remove this
             stmt.setString(PASSWORD, user.getPassword());
-             //stmt.setBoolean(ROLE, data.getRole());
-             stmt.setString(ROLE, user.getRole());
+            stmt.setString(ROLE, user.getRole().name());
             stmt.registerOutParameter(ID_USER, Types.INTEGER);
 
             stmt.executeUpdate();
@@ -60,10 +57,8 @@ public class UserRepositorySql implements UserRepository{
 
             for (User user : users) {
                 stmt.setString(USERNAME, user.getUsername());
-                stmt.setString(EMAIL, user.getEmail()); // remove this
                 stmt.setString(PASSWORD, user.getPassword());
-                  //stmt.setBoolean(ROLE, data.getRole());
-                stmt.setString(ROLE, user.getRole());
+                stmt.setString(ROLE, user.getRole().name());
                 stmt.registerOutParameter(ID_USER, Types.INTEGER);
 
                 stmt.executeUpdate();
@@ -78,10 +73,8 @@ public class UserRepositorySql implements UserRepository{
              CallableStatement stmt = con.prepareCall(UPDATE_USER)) {
 
             stmt.setString(USERNAME, data.getUsername());
-            stmt.setString(EMAIL, data.getEmail()); // remove this
             stmt.setString(PASSWORD, data.getPassword());
-            //stmt.setBoolean(ROLE, data.getRole());
-            stmt.setString(ROLE, data.getRole());
+            stmt.setString(ROLE, data.getRole().name());
             stmt.setInt(ID_USER, id);
 
             stmt.executeUpdate();
@@ -111,10 +104,8 @@ public class UserRepositorySql implements UserRepository{
                     return Optional.of(new User(
                             rs.getInt(ID_USER),
                             rs.getString(USERNAME),
-                            rs.getString(EMAIL),// remove this
                             rs.getString(PASSWORD),
-                             // rs.getBoolean(ROLE)
-                            rs.getString(ROLE)
+                            Role.valueOf(rs.getString(ROLE))
                     ));
                 }
             }
@@ -134,33 +125,11 @@ public class UserRepositorySql implements UserRepository{
                 users.add(new User(
                         rs.getInt(ID_USER),
                         rs.getString(USERNAME),
-                        rs.getString(EMAIL), // remove this
                         rs.getString(PASSWORD),
-                       // rs.getBoolean(ROLE)
-                        rs.getString(ROLE)
+                        Role.valueOf(rs.getString(ROLE))
                 ));
             }
         }
         return users;
     }
-
- /*   @Override
-   public boolean checkIfUserNameExists(String username) {
-    DataSource dataSource = DataSourceSingleton.getInstance();
-    try (Connection con = dataSource.getConnection();
-         CallableStatement stmt = con.prepareCall(CHECK_IF_USERNAME_EXISTS)) {
-
-        stmt.setString(USERNAME, username);
-
-        try (ResultSet rs = stmt.executeQuery()) {
-            return rs.next();
-        }
-
-    } catch (Exception ex) {
-        ex.printStackTrace(); 
-    }
-
-    return false;
-}*/
-    
 }

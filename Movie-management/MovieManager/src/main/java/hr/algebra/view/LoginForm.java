@@ -5,9 +5,14 @@
 package hr.algebra.view;
 
 import hr.algebra.MovieManager;
+import hr.algebra.appPreference.AppPreference;
 import hr.algebra.dal.UserRepository;
+import hr.algebra.dal.sql.UserRepositorySql;
 import hr.algebra.model.User;
 import hr.algebra.utilities.MessageUtils;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,6 +28,8 @@ public class LoginForm extends javax.swing.JFrame {
     
     public LoginForm() {
         initComponents();
+        userRepository = new UserRepositorySql();
+        addEnterKeyListener();
     }
 
     private static UserRepository userRepository;
@@ -42,6 +49,7 @@ public class LoginForm extends javax.swing.JFrame {
         lbRegister = new javax.swing.JLabel();
         btnLogin = new javax.swing.JButton();
         pfPassword = new javax.swing.JPasswordField();
+        lbWrongData = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -69,18 +77,20 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
 
+        lbWrongData.setForeground(new java.awt.Color(255, 51, 51));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(61, 61, 61)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(lbRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -92,8 +102,10 @@ public class LoginForm extends javax.swing.JFrame {
                                 .addGap(37, 37, 37)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(pfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(91, Short.MAX_VALUE))
+                                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(lbWrongData, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(91, 91, 91))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -112,27 +124,50 @@ public class LoginForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(66, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lbWrongData, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                .addGap(25, 25, 25))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        loginUser();
+    }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void loginUser() {
         try {
+            lbWrongData.setText("");
             if (formIsValid()) {
+                String username = tfUsername.getText().trim();
+                String password = new String(pfPassword.getPassword());
                 
-               // User user = userRepository.selectUser(tfUsername.getText().trim()); change repo
+                Optional<User> userOptional = userRepository
+                        .selectUsers()
+                        .stream()
+                        .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))
+                        .findFirst();
                 
-                dispose();
+                if (userOptional.isPresent()) {
+                    AppPreference.saveLoggedInUser(userOptional.get().getUsername());
+                    dispose();
+                    new MovieManager(userOptional.get()).setVisible(true);
+                } else {
+                    lbWrongData.setText("Incorrect username or password.");
+                }
             }
         } catch (Exception e) {
+            Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, e);
+            MessageUtils.showErrorMessage("Error", "Something went wrong while logging in.");
         }
-    }//GEN-LAST:event_btnLoginActionPerformed
+    }
 
     private void lbRegisterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lbRegisterMouseClicked
         try {
-            new RegisterForm();
+            new RegisterForm().setVisible(true);
+            dispose();
         } catch (Exception ex) {
             Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE,null,ex);
             MessageUtils.showErrorMessage("Error", "Unable to open register form");
@@ -181,11 +216,32 @@ public class LoginForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel lbRegister;
+    private javax.swing.JLabel lbWrongData;
     private javax.swing.JPasswordField pfPassword;
     private javax.swing.JTextField tfUsername;
     // End of variables declaration//GEN-END:variables
 
     private boolean formIsValid() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String username = tfUsername.getText().trim();
+        String password = new String(pfPassword.getPassword());
+        
+        if (username.isEmpty() || password.isEmpty()) {
+        lbWrongData.setText("Please enter both username and password.");
+        return false;
+        }
+        return true;
+    }
+
+    private void addEnterKeyListener() {
+     KeyAdapter enterListener = new KeyAdapter() {
+         @Override
+         public void keyReleased(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                loginUser();
+            }
+        }
+    };
+     tfUsername.addKeyListener(enterListener);
+     pfPassword.addKeyListener(enterListener);
     }
 }

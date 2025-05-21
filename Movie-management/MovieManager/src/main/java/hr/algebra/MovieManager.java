@@ -5,6 +5,10 @@
 package hr.algebra;
 
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import hr.algebra.appPreference.AppPreference;
+import hr.algebra.dal.UserRepository;
+import hr.algebra.dal.sql.UserRepositorySql;
+import hr.algebra.model.Role;
 import hr.algebra.model.User;
 import hr.algebra.utilities.MessageUtils;
 import hr.algebra.view.EditActorsPanel;
@@ -13,8 +17,12 @@ import hr.algebra.view.EditGenrePanel;
 import hr.algebra.view.EditMoviesPanel;
 import hr.algebra.view.LoginForm;
 import hr.algebra.view.UploadMoviesPanel;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -27,11 +35,30 @@ public class MovieManager extends javax.swing.JFrame {
     /**
      * Creates new form ArticleManager
      */
-    public MovieManager() {
+    public MovieManager(User user) {
         initComponents();
-        initPanels();
+        
+        try {
+            MovieManager.user = user;
+            initPanels();
+            
+            this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            this.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    if (MessageUtils.showConfirmDialog("Exit", "Do you really want to exit app?")) {
+                        dispose();
+                        System.exit(0);
+                }
+            }
+        });
+        } catch (Exception ex) {
+             Logger.getLogger(MovieManager.class.getName()).log(Level.SEVERE, null, ex);
+             MessageUtils.showErrorMessage("Error", "Unable to load main form, closing..");
+             System.exit(1);
+        }
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -95,6 +122,7 @@ public class MovieManager extends javax.swing.JFrame {
             if (MessageUtils.showConfirmDialog(
                     "Log out", 
                     "Do you really want to log out?")) {
+                    AppPreference.clearLoggedInUser();
                     dispose();
                     new LoginForm().setVisible(true);
             }
@@ -129,10 +157,31 @@ public class MovieManager extends javax.swing.JFrame {
         }
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new MovieManager().setVisible(true);
+        java.awt.EventQueue.invokeLater(() -> {
+           try {
+            String loggedInUsername = AppPreference.getLoggedInUser();
+
+            if (loggedInUsername != null) {
+                UserRepository userRepository = new UserRepositorySql();
+                Optional<User> userOpt = userRepository
+                        .selectUsers()
+                        .stream()
+                        .filter(u -> u.getUsername().equals(loggedInUsername))
+                        .findFirst();
+
+                if (userOpt.isPresent()) {
+                    new MovieManager(userOpt.get()).setVisible(true);
+                } else {
+                    new LoginForm().setVisible(true);
+                }
+            } else {
+                new LoginForm().setVisible(true);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            MessageUtils.showErrorMessage("Error", "Unable to start application.");
+            System.exit(1);
+        }
         });
     }
 
@@ -146,23 +195,16 @@ public class MovieManager extends javax.swing.JFrame {
 
     private void initPanels() {
         
-      /*  if (user.getRole()) {
+        if (user.getRole() == Role.ADMIN) {
            tpContent.add(UPLOAD__MOVIES, new UploadMoviesPanel());
+           tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
            tpContent.add(EDIT_ACTORS, new EditActorsPanel());
            tpContent.add(EDIT_DIRECTORS, new EditDirectorsPanel());
            tpContent.add(EDIT_GENRES, new EditGenrePanel());
-        }*/
-      
-        /*
-        tpContent.add(EDIT_MOVIES, new EditMoviesPanel());after finish roles*/
-
-        tpContent.add(UPLOAD__MOVIES, new UploadMoviesPanel());
-        tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
-        tpContent.add(EDIT_ACTORS, new EditActorsPanel());
-        tpContent.add(EDIT_DIRECTORS, new EditDirectorsPanel());
-        tpContent.add(EDIT_GENRES, new EditGenrePanel());
-           
-        
+        } else if (user.getRole() == Role.USER) {
+           tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
+        }
+              
     }
     private static User user;
     private static final String UPLOAD__MOVIES = "Upload Movies";

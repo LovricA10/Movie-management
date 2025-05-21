@@ -5,7 +5,14 @@
 package hr.algebra.view;
 
 import hr.algebra.dal.UserRepository;
+import hr.algebra.dal.sql.UserRepositorySql;
+import hr.algebra.model.Role;
 import hr.algebra.model.User;
+import hr.algebra.utilities.MessageUtils;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,6 +26,8 @@ public class RegisterForm extends javax.swing.JFrame {
     
     public RegisterForm() {
         initComponents();
+        userRepository = new UserRepositorySql();
+        addEnterKeyListener();
     }
 
     private static UserRepository userRepository;
@@ -37,6 +46,8 @@ public class RegisterForm extends javax.swing.JFrame {
         tfUsername = new javax.swing.JTextField();
         btnRegister = new javax.swing.JButton();
         pfPassword = new javax.swing.JPasswordField();
+        jLabel6 = new javax.swing.JLabel();
+        pfConfirmPassword = new javax.swing.JPasswordField();
         lbWrongData = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -57,28 +68,37 @@ public class RegisterForm extends javax.swing.JFrame {
             }
         });
 
+        jLabel6.setText("Confirm Password");
+
+        lbWrongData.setForeground(new java.awt.Color(255, 51, 51));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(61, 61, 61)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnRegister, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(53, 53, 53)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnRegister, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(37, 37, 37)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(pfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGap(28, 28, 28)
+                                    .addComponent(jLabel1))))
+                        .addComponent(lbWrongData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(37, 37, 37)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(pfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(28, 28, 28)
-                                .addComponent(jLabel1))))
-                    .addComponent(lbWrongData, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pfConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(91, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -88,37 +108,32 @@ public class RegisterForm extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(btnRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pfConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addComponent(btnRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbWrongData, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
-                .addGap(19, 19, 19))
+                .addGap(13, 13, 13))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
-       /* try {
-            if (formIsValid()) {
-                
-                addUser(tfUsername.getText(), new String(pfPassword.getPassword()));
-                dispose();
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(RegisterForm.class.getName()).log(Level.SEVERE,null,ex);
-            MessageUtils.showErrorMessage("Error", "error while trying to add user...");
-            System.exit(1);
-        }*/
-       
+        registerUser();
     }//GEN-LAST:event_btnRegisterActionPerformed
 
+    
     /**
      * @param args the command line arguments
      */
@@ -160,32 +175,80 @@ public class RegisterForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel lbWrongData;
+    private javax.swing.JPasswordField pfConfirmPassword;
     private javax.swing.JPasswordField pfPassword;
     private javax.swing.JTextField tfUsername;
     // End of variables declaration//GEN-END:variables
 
-   /* private boolean formIsValid() {
-        if (!tfUsername.getText().trim().isEmpty() && pfPassword.getPassword().length > 0) {
+    private void registerUser() {
+         if (formIsValid()) {
+        try {
+            String username = tfUsername.getText().trim();
+            String password = new String(pfPassword.getPassword());
             
-            if (userRepository.checkIfUserNameExists(tfUsername.getText())) {
-                lbWrongData.setText("Username already exists");
-                return false;
+            userRepository.createUser(new User(0, username, password, Role.USER));
+            
+            MessageUtils.showInformationMessage("Success", "User registered successfully!");
+            dispose();
+            
+            new LoginForm().setVisible(true);
+            
+        } catch (Exception ex) {
+            Logger.getLogger(RegisterForm.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Error while trying to add user...");
+        }
+    }
+    }
+
+    private void addEnterKeyListener() {
+    KeyAdapter enterListener = new KeyAdapter() {
+        @Override
+        public void keyReleased(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                registerUser();
             }
-            return true;
         }
-        else {
-            lbWrongData.setText("Username and Password are required");
+    };
+
+    tfUsername.addKeyListener(enterListener);
+    pfPassword.addKeyListener(enterListener);
+    pfConfirmPassword.addKeyListener(enterListener);
+    }
+
+    private boolean formIsValid() {
+        String username = tfUsername.getText().trim();
+        String password = new String(pfPassword.getPassword());
+        String confirmPassword = new String(pfConfirmPassword.getPassword());
+        
+        
+        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+            lbWrongData.setText("Please fill in all fields.");
+            return false;
         }
+        if (!password.equals(confirmPassword)) {
+            lbWrongData.setText("Passwords do not match.");
+            return false;
+        }
+        
+        try {
+            boolean userExists = userRepository
+                    .selectUsers()
+                    .stream()
+                    .anyMatch(u -> u.getUsername().equals(username));
+
+        if (userExists) {
+            lbWrongData.setText("Username is already taken.");
+            return false;
+        }
+    } catch (Exception e) {
+        lbWrongData.setText("Error checking user existence.");
+        Logger.getLogger(RegisterForm.class.getName()).log(Level.SEVERE, null, e);
         return false;
     }
-*/
-   /* private void addUser(String username, String password) throws Exception {
-        User user = new User(
-                username, 
-                password 
-                );
-        
-        userRepository.createUser(user);
-    }*/
+
+    lbWrongData.setText("");
+    return true;
+    }
 }

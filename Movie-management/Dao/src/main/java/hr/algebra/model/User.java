@@ -12,35 +12,24 @@ public final class User {
 
     private int id;
     private String username;
-    private String email;
     private String password;
-    private /*Boolean*/ String role;
+    private Role role;
 
     
     public User(){
     }
-    public User(int id, String username, String email, String password, /*Boolean*/ String role) {
+
+    public User(int id, String username, String password, Role role) {
         this.id = id;
         this.username = username;
-        this.email = email;
         this.password = password;
         this.role = role;
-    }
-    
-    
-    public User(String username, String email, String password, /*Boolean*/ String role) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        
-        
-        
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, Role role) {
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     public int getId() {
@@ -59,14 +48,6 @@ public final class User {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -75,13 +56,15 @@ public final class User {
         this.password = password;
     }
 
-    public /*Boolean*/ String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(/*Boolean*/ String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
+   
+    
     
     
 }

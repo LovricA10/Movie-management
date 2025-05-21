@@ -8,10 +8,13 @@ GO
 CREATE TABLE [User] (
     IDUser INT PRIMARY KEY IDENTITY,
     Username NVARCHAR(100),
-    Email NVARCHAR(100),
     [Password] NVARCHAR(100),
     Role NVARCHAR(50)
 )
+GO
+
+ALTER TABLE [User]
+DROP COLUMN Email;
 GO
 
 -- Movie table
@@ -110,22 +113,20 @@ GO
 -- === STORED PROCEDURES ===
 
 -- USER
-CREATE PROCEDURE createUser
+CREATE OR ALTER PROCEDURE createUser
     @Username NVARCHAR(100),
-    @Email NVARCHAR(100),
     @Password NVARCHAR(100),
     @Role NVARCHAR(50),
     @IDUser INT OUTPUT
 AS
 BEGIN
-    INSERT INTO [User] VALUES (@Username, @Email, @Password, @Role)
+    INSERT INTO [User] VALUES (@Username, @Password, @Role)
     SET @IDUser = SCOPE_IDENTITY()
 END
 GO
 
-CREATE PROCEDURE updateUser
+CREATE OR ALTER PROCEDURE updateUser
     @Username NVARCHAR(100),
-    @Email NVARCHAR(100),
     @Password NVARCHAR(100),
     @Role NVARCHAR(50),
     @IDUser INT
@@ -133,7 +134,6 @@ AS
 BEGIN
     UPDATE [User] SET
         Username = @Username,
-        Email = @Email,
         [Password] = @Password,
         Role = @Role
     WHERE IDUser = @IDUser
@@ -162,6 +162,17 @@ BEGIN
     SELECT * FROM [User]
 END
 GO
+
+--INSERT DEFAULT ADMIN
+DECLARE @id INT;
+
+EXEC createUser
+    @Username = 'lovric',
+    @Password = 'FilovanePaprike',
+    @Role = 'ADMIN',
+    @IDUser = @id OUTPUT
+GO
+
 
 -- MOVIE
  ALTER PROCEDURE createMovie
