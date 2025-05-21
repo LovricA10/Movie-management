@@ -7,7 +7,6 @@ package hr.algebra.view;
 import hr.algebra.dal.DirectorRepository;
 import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.Director;
-import hr.algebra.model.Movie;
 import hr.algebra.utilities.FileUtils;
 import hr.algebra.utilities.IconUtils;
 import hr.algebra.utilities.MessageUtils;
@@ -252,6 +251,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
             clearForm();
             MessageUtils.showInformationMessage("Success", "Director added!");
         } catch (Exception ex) {
+            ex.printStackTrace();
             Logger.getLogger(EditDirectorsPanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Error", "Unable to add director!");
         }

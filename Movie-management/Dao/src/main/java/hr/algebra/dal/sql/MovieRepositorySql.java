@@ -30,7 +30,7 @@ public class MovieRepositorySql implements MovieRepository {
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
-    private static final String SELECT_MOVIES_BY_DIRECTOR_ID = "{ CALL selectMoviesByDirectorId(?) }";
+   // private static final String SELECT_MOVIES_BY_DIRECTOR_ID = "{ CALL selectMoviesByDirectorId(?) }";
     
     @Override
     public int createMovie(Movie movie) throws Exception {
@@ -58,7 +58,9 @@ public class MovieRepositorySql implements MovieRepository {
                      stmt.setString(TITLE, movie.getTitle());
                      stmt.setString(LINK, movie.getLink());
                     stmt.setString(DESCRIPTION, movie.getDescription());
+                   // stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
                     stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
+                    System.out.println(movie);
                     stmt.setString(PICTURE_PATH, movie.getPicturePath());
 
                     stmt.registerOutParameter(ID_MOVIE, Types.INTEGER);
@@ -137,7 +139,7 @@ public class MovieRepositorySql implements MovieRepository {
     }
   }
 
-    @Override
+  /*  @Override
     public List<Movie> selectMoviesByDirectorId(int directorId) throws Exception {
          List<Movie> movies = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
@@ -159,7 +161,7 @@ public class MovieRepositorySql implements MovieRepository {
         }
      }
         return movies;
-    }
+    }*/
 }
    
      

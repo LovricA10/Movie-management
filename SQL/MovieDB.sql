@@ -18,7 +18,6 @@ GO
 CREATE TABLE Movie (
     IDMovie INT PRIMARY KEY IDENTITY,
     Title NVARCHAR(200),
-    Duration INT,
     StartDate NVARCHAR(90),
     PicturePath NVARCHAR(200)
 )
@@ -79,12 +78,11 @@ CREATE TABLE Director (
     [Name] NVARCHAR(100),
     LastName NVARCHAR(100),
     DateBirth NVARCHAR(90),
-    PicturePath NVARCHAR(200)
 )
 GO
 
 ALTER TABLE Director
-DROP COLUMN PicturePath
+ADD PicturePath NVARCHAR(200);
 
 -- MovieDirector table (many-to-many)
 CREATE TABLE MovieDirector (
@@ -166,16 +164,19 @@ END
 GO
 
 -- MOVIE
-CREATE OR ALTER PROCEDURE createMovie
+ ALTER PROCEDURE createMovie
     @Title NVARCHAR(200),
+	@StartDate NVARCHAR(900),
+	@PicturePath NVARCHAR(2000),
+	@Description NVARCHAR(MAX),
     @Link NVARCHAR(500),
-    @Description NVARCHAR(MAX),
-    @StartDate NVARCHAR(90),
-    @PicturePath NVARCHAR(200),
+ 
+
+  
     @IDMovie INT OUTPUT
 AS
 BEGIN
-    INSERT INTO Movie VALUES (@Title, @Link,@Description, @StartDate, @PicturePath)
+    INSERT INTO Movie VALUES (@Title, @StartDate,@PicturePath,@Description , @Link)
     SET @IDMovie = SCOPE_IDENTITY()
 END
 GO
@@ -184,8 +185,8 @@ CREATE OR ALTER  PROCEDURE updateMovie
     @Title NVARCHAR(200),
     @Link NVARCHAR(500),
     @Description NVARCHAR(MAX),
-    @StartDate NVARCHAR(90),
-    @PicturePath NVARCHAR(200),
+    @StartDate NVARCHAR(900),
+    @PicturePath NVARCHAR(2000),
     @IDMovie INT
 AS
 BEGIN
@@ -338,14 +339,15 @@ END
 GO
 
 -- DIRECTOR
-CREATE OR ALTER PROCEDURE createDirector
+ ALTER PROCEDURE createDirector
     @Name NVARCHAR(100),
     @LastName NVARCHAR(100),
     @DateBirth NVARCHAR(90),
+	@PicturePath NVARCHAR(200),
     @IDDirector INT OUTPUT
 AS
 BEGIN
-    INSERT INTO Director VALUES (@Name, @LastName, @DateBirth)
+    INSERT INTO Director(Name, LastName, DateBirth, PicturePath) VALUES (@Name, @LastName, @DateBirth,@PicturePath)
     SET @IDDirector = SCOPE_IDENTITY()
 END
 GO
@@ -354,13 +356,15 @@ CREATE OR ALTER PROCEDURE updateDirector
     @Name NVARCHAR(100),
     @LastName NVARCHAR(100),
     @DateBirth NVARCHAR(90),
+	@PicturePath NVARCHAR(200),
     @IDDirector INT
 AS
 BEGIN
     UPDATE Director SET
         Name = @Name,
         LastName = @LastName,
-        DateBirth = @DateBirth
+        DateBirth = @DateBirth,
+		PicturePath = @PicturePath
     WHERE IDDirector = @IDDirector
 END
 GO

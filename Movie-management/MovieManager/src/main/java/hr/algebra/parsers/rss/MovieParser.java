@@ -139,8 +139,13 @@ public class MovieParser {
                         }
                         case PUB_DATE -> {
                              if (!data.isEmpty()) {
-                                 LocalDateTime publishedDate = LocalDateTime.parse(data,DateTimeFormatter.RFC_1123_DATE_TIME);
-                                 movie.setStartDate(publishedDate);   
+                                 try {
+                                     LocalDateTime publishedDate = LocalDateTime.parse(data, DateTimeFormatter.RFC_1123_DATE_TIME);
+                                     movie.setStartDate(publishedDate);                                     
+                                 } catch (Exception e) {
+                                     e.printStackTrace();
+                                     Logger.getLogger(MovieParser.class.getName()).log(Level.WARNING, "Failed date: " + data, e);
+                                 }
                             }
                         }
                     }
@@ -152,3 +157,4 @@ public class MovieParser {
     }
   }
 }
+

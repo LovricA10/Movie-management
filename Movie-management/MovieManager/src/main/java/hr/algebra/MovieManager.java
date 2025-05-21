@@ -156,8 +156,8 @@ public class MovieManager extends javax.swing.JFrame {
         /*
         tpContent.add(EDIT_MOVIES, new EditMoviesPanel());after finish roles*/
 
-       // tpContent.add(UPLOAD__MOVIES, new UploadMoviesPanel());
-       // tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
+        tpContent.add(UPLOAD__MOVIES, new UploadMoviesPanel());
+        tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
         tpContent.add(EDIT_ACTORS, new EditActorsPanel());
         tpContent.add(EDIT_DIRECTORS, new EditDirectorsPanel());
         tpContent.add(EDIT_GENRES, new EditGenrePanel());
