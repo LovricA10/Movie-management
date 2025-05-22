@@ -472,21 +472,36 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE deleteMovieGenre
-    @IDMovieGenre INT
+CREATE PROCEDURE deleteMovieGenreByMovieAndGenre
+    @MovieID INT,
+    @GenreID INT
 AS
 BEGIN
-    DELETE FROM MovieGenre WHERE IDMovieGenre = @IDMovieGenre
+    DELETE FROM MovieGenre
+    WHERE MovieID = @MovieID AND GenreID = @GenreID
 END
 GO
 
-CREATE PROCEDURE selectMovieGenres
+CREATE PROCEDURE selectGenresForMovie
+    @MovieID INT
 AS
 BEGIN
-    SELECT * FROM MovieGenre
+    SELECT g.IDGenre, g.GenreName
+    FROM Genre g
+    INNER JOIN MovieGenre mg ON g.IDGenre = mg.GenreID
+    WHERE mg.MovieID = @MovieID
 END
 GO
 
+CREATE PROCEDURE selectGenresNotInMovie
+    @MovieID INT
+AS
+BEGIN
+    SELECT g.IDGenre, g.GenreName
+    FROM Genre g
+    WHERE g.IDGenre NOT IN (SELECT GenreID FROM MovieGenre WHERE MovieID = @MovieID)
+END
+GO
 -- MOVIEACTOR
 CREATE PROCEDURE createMovieActor
     @MovieID INT,
@@ -499,20 +514,37 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE deleteMovieActor
-    @IDMovieActor INT
+CREATE OR ALTER PROCEDURE deleteMovieActorByMovieActor
+    @MovieID INT,
+    @ActorID INT
 AS
 BEGIN
-    DELETE FROM MovieActor WHERE IDMovieActor = @IDMovieActor
+    DELETE FROM MovieActor
+    WHERE MovieID = @MovieID AND ActorID = @ActorID
+END
+GO
+-- SELECT ACTORS FOR MOVIE
+CREATE OR ALTER PROCEDURE selectActorsForMovie
+    @MovieID INT
+AS
+BEGIN
+    SELECT a.IDActor, a.Name, a.LastName, a.DateBirth, a.PicturePath
+    FROM Actor a
+    INNER JOIN MovieActor ma ON a.IDActor = ma.ActorID
+    WHERE ma.MovieID = @MovieID;
+END
+GO
+-- SELECT ACTORS NOT IN MOVIE
+CREATE OR ALTER PROCEDURE selectActorsNotInMovie
+    @MovieID INT
+AS
+BEGIN
+    SELECT a.IDActor, a.Name, a.LastName, a.DateBirth, a.PicturePath
+    FROM Actor a
+    WHERE a.IDActor NOT IN (SELECT ActorID FROM MovieActor WHERE MovieID = @MovieID);
 END
 GO
 
-CREATE PROCEDURE selectMovieActors
-AS
-BEGIN
-    SELECT * FROM MovieActor
-END
-GO
 
 -- MOVIEDIRECTOR
 CREATE PROCEDURE createMovieDirector
@@ -525,26 +557,33 @@ BEGIN
     SET @IDMovieDirector = SCOPE_IDENTITY()
 END
 GO
-
-CREATE PROCEDURE deleteMovieDirector
-    @IDMovieDirector INT
-AS
-BEGIN
-    DELETE FROM MovieDirector WHERE IDMovieDirector = @IDMovieDirector
-END
-GO
-
-CREATE PROCEDURE selectMovieDirectors
-AS
-BEGIN
-    SELECT * FROM MovieDirector
-END
-GO
 CREATE PROCEDURE deleteMovieDirectorByMovieAndDirector
     @MovieID INT,
     @DirectorID INT
 AS
 BEGIN
     DELETE FROM MovieDirector WHERE MovieID = @MovieID AND DirectorID = @DirectorID
+END
+GO
+CREATE PROCEDURE selectDirectorsForMovie
+    @MovieID INT
+AS
+BEGIN
+    SELECT d.IDDirector, d.Name, d.LastName, d.DateBirth, d.PicturePath
+    FROM Director d
+    INNER JOIN MovieDirector md ON d.IDDirector = md.DirectorID
+    WHERE md.MovieID = @MovieID
+END
+GO
+
+CREATE PROCEDURE selectDirectorsNotInMovie
+    @MovieID INT
+AS
+BEGIN
+    SELECT d.IDDirector, d.Name, d.LastName, d.DateBirth, d.PicturePath
+    FROM Director d
+    WHERE d.IDDirector NOT IN (
+        SELECT DirectorID FROM MovieDirector WHERE MovieID = @MovieID
+    )
 END
 GO

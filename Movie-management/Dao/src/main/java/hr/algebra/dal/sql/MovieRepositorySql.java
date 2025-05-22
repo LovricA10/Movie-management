@@ -138,30 +138,6 @@ public class MovieRepositorySql implements MovieRepository {
         }
     }
   }
-
-  /*  @Override
-    public List<Movie> selectMoviesByDirectorId(int directorId) throws Exception {
-         List<Movie> movies = new ArrayList<>();
-        DataSource dataSource = DataSourceSingleton.getInstance();
-    
-        try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_MOVIES_BY_DIRECTOR_ID)) {
-            stmt.setInt(ID_MOVIE, directorId);
-             try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                movies.add(new Movie(
-                    rs.getInt(ID_MOVIE),
-                    rs.getString(TITLE),
-                    rs.getString(LINK),
-                    rs.getString(DESCRIPTION),
-                    LocalDateTime.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
-                    rs.getString(PICTURE_PATH)
-                ));
-            }
-        }
-     }
-        return movies;
-    }*/
 }
    
      

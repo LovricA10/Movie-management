@@ -11,6 +11,7 @@ import hr.algebra.dal.sql.UserRepositorySql;
 import hr.algebra.model.Role;
 import hr.algebra.model.User;
 import hr.algebra.utilities.MessageUtils;
+import hr.algebra.view.DragAndDropPanel;
 import hr.algebra.view.EditActorsPanel;
 import hr.algebra.view.EditDirectorsPanel;
 import hr.algebra.view.EditGenrePanel;
@@ -201,8 +202,10 @@ public class MovieManager extends javax.swing.JFrame {
            tpContent.add(EDIT_ACTORS, new EditActorsPanel());
            tpContent.add(EDIT_DIRECTORS, new EditDirectorsPanel());
            tpContent.add(EDIT_GENRES, new EditGenrePanel());
+           tpContent.add(DRAG_AND__DROP, new DragAndDropPanel());
         } else if (user.getRole() == Role.USER) {
            tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
+           tpContent.add(DRAG_AND__DROP, new DragAndDropPanel());
         }
               
     }
@@ -212,4 +215,5 @@ public class MovieManager extends javax.swing.JFrame {
     private static final String EDIT_ACTORS = "Edit Actors";
     private static final String EDIT_DIRECTORS = "Edit Directors";
     private static final String EDIT_GENRES = "Edit Genres";
+    private static final String DRAG_AND__DROP = "Drag and Drop";
 }

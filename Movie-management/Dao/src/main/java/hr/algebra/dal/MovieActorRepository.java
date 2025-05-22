@@ -4,6 +4,7 @@
  */
 package hr.algebra.dal;
 
+import hr.algebra.model.Actor;
 import hr.algebra.model.MovieActor;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public interface MovieActorRepository {
     int createMovieActor(MovieActor movieActor) throws Exception;
-    void createMovieActors(List<MovieActor> movieActors) throws Exception;
-    void deleteMovieActor(int id) throws Exception;
-    List<MovieActor> selectMovieActors() throws Exception;
+    void deleteMovieActor(int movieId, int actorId) throws Exception;
+    List<Actor> selectActorsForMovie(int movieId) throws Exception;
+    List<Actor> selectActorsNotInMovie(int movieId) throws Exception;
 }

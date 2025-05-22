@@ -4,6 +4,7 @@
  */
 package hr.algebra.dal;
 
+import hr.algebra.model.Genre;
 import hr.algebra.model.MovieGenre;
 import java.util.List;
 
@@ -13,7 +14,9 @@ import java.util.List;
  */
 public interface MovieGenreRepository {
     int createMovieGenre(MovieGenre movieGenre) throws Exception;
-    void createMovieGenres(List<MovieGenre> movieGenres) throws Exception;
-    void deleteMovieGenre(int id) throws Exception;
-    List<MovieGenre> selectMovieGenres() throws Exception;
+    void deleteMovieGenre(int movieId,int genreId) throws Exception;
+    List<Genre> selectGenresForMovie(int movieId) throws Exception;
+    List<Genre> selectGenresNotInMovie(int movieId) throws Exception;
+    
+   
 }
