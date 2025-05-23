@@ -19,8 +19,8 @@ import javax.sql.DataSource;
  *
  * @author Lovric
  */
-public class MovieUserRepositorySql implements MovieUserRepository{
-    
+public class MovieUserRepositorySql implements MovieUserRepository {
+
     private static final String ID_MOVIE_USER = "IDMovieUser";
     private static final String MOVIE_ID = "MovieID";
     private static final String USER_ID = "UserID";
@@ -37,8 +37,7 @@ public class MovieUserRepositorySql implements MovieUserRepository{
     @Override
     public int createMovieUser(MovieUser movieUser) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CREATE_MOVIE_USER)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_MOVIE_USER)) {
 
             stmt.setInt(MOVIE_ID, movieUser.getMovieId());
             stmt.setInt(USER_ID, movieUser.getUserId());
@@ -55,8 +54,7 @@ public class MovieUserRepositorySql implements MovieUserRepository{
     @Override
     public void createMovieUsers(List<MovieUser> movieUsers) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CREATE_MOVIE_USER)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_MOVIE_USER)) {
 
             for (MovieUser movieUser : movieUsers) {
                 stmt.setInt(MOVIE_ID, movieUser.getMovieId());
@@ -74,8 +72,7 @@ public class MovieUserRepositorySql implements MovieUserRepository{
     @Override
     public void updateMovieUser(int id, MovieUser data) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(UPDATE_MOVIE_USER)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(UPDATE_MOVIE_USER)) {
 
             stmt.setInt(MOVIE_ID, data.getMovieId());
             stmt.setInt(USER_ID, data.getUserId());
@@ -86,13 +83,12 @@ public class MovieUserRepositorySql implements MovieUserRepository{
 
             stmt.executeUpdate();
         }
-    }   
+    }
 
     @Override
     public void deleteMovieUser(int id) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(DELETE_MOVIE_USER)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(DELETE_MOVIE_USER)) {
 
             stmt.setInt(ID_MOVIE_USER, id);
             stmt.executeUpdate();
@@ -102,8 +98,7 @@ public class MovieUserRepositorySql implements MovieUserRepository{
     @Override
     public Optional<MovieUser> selectMovieUser(int id) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(SELECT_MOVIE_USER)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_MOVIE_USER)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -126,9 +121,7 @@ public class MovieUserRepositorySql implements MovieUserRepository{
     public List<MovieUser> selectMovieUsers() throws Exception {
         List<MovieUser> movieUsers = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(SELECT_MOVIE_USERS);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_MOVIE_USERS); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 movieUsers.add(new MovieUser(

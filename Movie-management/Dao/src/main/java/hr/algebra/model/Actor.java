@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package hr.algebra.model;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -11,6 +12,7 @@ import java.time.format.DateTimeFormatter;
  * @author Lovric
  */
 public final class Actor {
+
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     private int id;
     private String name;
@@ -18,9 +20,10 @@ public final class Actor {
     private LocalDate dateBirth;
     private String picturePath;
 
-    public Actor(){
-        
+    public Actor() {
+
     }
+
     public Actor(int id, String name, String lastName, LocalDate dateBirth, String picturePath) {
         this.id = id;
         this.name = name;
@@ -78,9 +81,29 @@ public final class Actor {
 
     @Override
     public String toString() {
-        return "Actor{" + "id=" + id + ", name=" + name + ", lastName=" + lastName + ", dateBirth=" + dateBirth + '}';
+        return name + " " + lastName;
     }
-    
-    
-    
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Actor other = (Actor) obj;
+        return this.id == other.id;
+    }
+
 }

@@ -9,6 +9,7 @@ package hr.algebra.model;
  * @author Lovric
  */
 public final class MovieUser {
+
     private int id;
     private int movieId;
     private int userId;
@@ -83,6 +84,5 @@ public final class MovieUser {
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
-    
-    
+
 }

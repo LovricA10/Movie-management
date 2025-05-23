@@ -233,24 +233,15 @@ BEGIN
     SELECT * FROM Movie
 END
 GO
-CREATE PROCEDURE selectMoviesByDirectorId
-    @DirectorID INT
+--DELETE ALL MOVIES 
+CREATE PROCEDURE deleteAllMovies
 AS
 BEGIN
-    SELECT 
-        m.IDMovie,
-        m.Title,
-        m.Link,
-        m.Description,
-        m.StartDate,
-        m.PicturePath
-    FROM Movie m
-    INNER JOIN MovieDirector md ON m.IDMovie = md.MovieID
-    WHERE md.DirectorID = @DirectorID
+    DELETE FROM MovieActor;
+    DELETE FROM MovieDirector;
+    DELETE FROM MovieGenre;
+    DELETE FROM Movie;
 END
-GO
-
-
 
 -- GENRE
 CREATE PROCEDURE createGenre

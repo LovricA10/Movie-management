@@ -9,6 +9,7 @@ package hr.algebra.model;
  * @author Lovric
  */
 public class MovieGenre {
+
     private int id;
     private int movieId;
     private int genreId;
@@ -50,6 +51,5 @@ public class MovieGenre {
     public void setGenreId(int genreId) {
         this.genreId = genreId;
     }
-    
-    
+
 }

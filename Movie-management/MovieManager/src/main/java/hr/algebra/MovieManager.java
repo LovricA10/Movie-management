@@ -202,10 +202,10 @@ public class MovieManager extends javax.swing.JFrame {
            tpContent.add(EDIT_ACTORS, new EditActorsPanel());
            tpContent.add(EDIT_DIRECTORS, new EditDirectorsPanel());
            tpContent.add(EDIT_GENRES, new EditGenrePanel());
-           tpContent.add(DRAG_AND__DROP, new DragAndDropPanel());
+            tpContent.add(DRAG_AND__DROP, new DragAndDropPanel(false));
         } else if (user.getRole() == Role.USER) {
            tpContent.add(EDIT_MOVIES, new EditMoviesPanel());
-           tpContent.add(DRAG_AND__DROP, new DragAndDropPanel());
+           tpContent.add(DRAG_AND__DROP, new DragAndDropPanel(true));
         }
               
     }

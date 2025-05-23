@@ -1,4 +1,5 @@
 package hr.algebra.dal.sql;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -16,25 +17,24 @@ import javax.sql.DataSource;
  */
 public final class DataSourceSingleton {
 
-    
     private static final String SERVER_NAME = "SERVER_NAME";
     private static final String DATABASE_NAME = "DATABASE_NAME";
-    private static final String USER = "USER"; 
-    private static final String PASSWORD = "PASSWORD"; 
-    
+    private static final String USER = "USER";
+    private static final String PASSWORD = "PASSWORD";
+
     private static final Properties PROPERTIES = new Properties();
     private static final String PATH = "/config/db.properties";
-    
+
     static {
-        try (InputStream is = DataSourceSingleton.class.getResourceAsStream(PATH)){
+        try (InputStream is = DataSourceSingleton.class.getResourceAsStream(PATH)) {
             PROPERTIES.load(is);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
 
-    private DataSourceSingleton() {}
+    private DataSourceSingleton() {
+    }
 
     private static DataSource instance;
 
@@ -44,6 +44,7 @@ public final class DataSourceSingleton {
         }
         return instance;
     }
+
     private static DataSource createInstance() {
         SQLServerDataSource dataSource = new SQLServerDataSource();
         dataSource.setServerName(PROPERTIES.getProperty(SERVER_NAME));
@@ -51,5 +52,5 @@ public final class DataSourceSingleton {
         dataSource.setUser(PROPERTIES.getProperty(USER));
         dataSource.setPassword(PROPERTIES.getProperty(PASSWORD));
         return dataSource;
-    }    
+    }
 }

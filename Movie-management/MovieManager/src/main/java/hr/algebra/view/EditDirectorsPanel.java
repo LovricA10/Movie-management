@@ -236,9 +236,11 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddDirectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDirectorActionPerformed
-        if (!formValid()) return;
+        if (!formValid()) {
+            return;
+        }
 
-       try {
+        try {
             String localPicturePath = uploadPicture();
             Director director = new Director(
                     tfName.getText().trim(),
@@ -255,7 +257,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
             Logger.getLogger(EditDirectorsPanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Error", "Unable to add director!");
         }
-       
+
     }//GEN-LAST:event_btnAddDirectorActionPerformed
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
@@ -263,7 +265,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_formComponentShown
 
     private void btnUpdateDirectorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateDirectorActionPerformed
-         if (selectedDirector == null) {
+        if (selectedDirector == null) {
             MessageUtils.showInformationMessage("Wrong operation", "Please choose a director to update");
             return;
         }
@@ -288,8 +290,8 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
             directorsTableModel.setDirectors(directorRepository.selectDirectors());
             clearForm();
             MessageUtils.showInformationMessage("Success", "Director updated!");
-        
-    }catch (DateTimeException ex) {
+
+        } catch (DateTimeException ex) {
             lbDateError.setVisible(true);
         } catch (Exception ex) {
             Logger.getLogger(EditDirectorsPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -327,13 +329,12 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_tbDirectorsKeyReleased
 
     private void btnChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseActionPerformed
-         Optional<File> optionalFile = FileUtils.uploadFile("Images", "jpg", "jpeg", "png");
-            optionalFile.ifPresent(file -> {
+        Optional<File> optionalFile = FileUtils.uploadFile("Images", "jpg", "jpeg", "png");
+        optionalFile.ifPresent(file -> {
             tfPicturePath.setText(file.getAbsolutePath());
             setIcon(lbIcon, file);
         });
     }//GEN-LAST:event_btnChooseActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddDirector;
@@ -361,7 +362,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
     private Director selectedDirector;
     private DirectorTableModel directorsTableModel;
     private DirectorRepository directorRepository;
-    
+
     private void init() {
         try {
             initValidation();
@@ -391,11 +392,11 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
         validationMap.values().forEach(label -> label.setVisible(false));
     }
 
-    private void initRepository() throws Exception{
-         directorRepository = RepositoryFactory.getRepository(DirectorRepository.class);
+    private void initRepository() throws Exception {
+        directorRepository = RepositoryFactory.getRepository(DirectorRepository.class);
     }
 
-    private void initTable() throws Exception{
+    private void initTable() throws Exception {
         tbDirectors.setRowHeight(25);
         tbDirectors.setAutoCreateRowSorter(true);
         tbDirectors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -406,17 +407,17 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
     private boolean formValid() {
         hideErrors();
         boolean ok = true;
-        
-        for (Map.Entry<JTextComponent, JLabel> entry : validationMap.entrySet()) {
-        JTextComponent field = entry.getKey();
-        JLabel errorLabel = entry.getValue();
-        String text = field.getText().trim();
-        boolean isEmpty = text.isEmpty();
-       
-        ok &= !isEmpty;
-        errorLabel.setVisible(isEmpty);
 
-       if (field == tfDateBirth && !isEmpty) {
+        for (Map.Entry<JTextComponent, JLabel> entry : validationMap.entrySet()) {
+            JTextComponent field = entry.getKey();
+            JLabel errorLabel = entry.getValue();
+            String text = field.getText().trim();
+            boolean isEmpty = text.isEmpty();
+
+            ok &= !isEmpty;
+            errorLabel.setVisible(isEmpty);
+
+            if (field == tfDateBirth && !isEmpty) {
                 try {
                     LocalDate.parse(text, Director.DATE_FORMATTER);
                 } catch (Exception e) {
@@ -427,10 +428,10 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
         }
 
         return ok;
-}
+    }
 
     private void clearForm() {
-         hideErrors();
+        hideErrors();
         validationMap.keySet().forEach(field -> field.setText(""));
         lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png")));
         selectedDirector = null;
@@ -454,7 +455,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
         }
     }
 
-    private void fillForm(Director director) throws Exception{
+    private void fillForm(Director director) throws Exception {
         tfName.setText(director.getName());
         tfLastName.setText(director.getLastName());
         tfDateBirth.setText(director.getDateBirth() != null
@@ -476,7 +477,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
     }
 
     private void setIcon(JLabel label, File file) {
-         try {
+        try {
             label.setIcon(IconUtils.createIcon(file, label.getWidth(), label.getHeight()));
         } catch (IOException ex) {
             Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -489,7 +490,7 @@ public class EditDirectorsPanel extends javax.swing.JPanel {
         String ext = picturePath.substring(picturePath.lastIndexOf("."));
         String pictureName = UUID.randomUUID() + ext;
         String localPicturePath = DIR + File.separator + pictureName;
-        
+
         FileUtils.copy(picturePath, localPicturePath);
         return localPicturePath;
     }

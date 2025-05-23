@@ -20,8 +20,8 @@ import javax.sql.DataSource;
  *
  * @author Lovric
  */
-public class ActorRepositorySql implements ActorRepository{
-    
+public class ActorRepositorySql implements ActorRepository {
+
     private static final String ID_ACTOR = "IDActor";
     private static final String FIRST_NAME = "Name";
     private static final String LAST_NAME = "LastName";
@@ -36,25 +36,23 @@ public class ActorRepositorySql implements ActorRepository{
 
     @Override
     public int createActor(Actor actor) throws Exception {
-         DataSource dataSource = DataSourceSingleton.getInstance();
-                try (Connection con = dataSource.getConnection();
-                        CallableStatement stmt = con.prepareCall(CREATE_ACTOR)) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_ACTOR)) {
 
-                       stmt.setString(FIRST_NAME, actor.getName());
-                       stmt.setString(LAST_NAME, actor.getLastName());
-                       stmt.setString(BIRTHDATE, actor.getDateBirth().format(Actor.DATE_FORMATTER));
-                       stmt.setString(PICTURE_PATH, actor.getPicturePath());
-                       stmt.registerOutParameter(ID_ACTOR, Types.INTEGER);
-                       stmt.executeUpdate();
-                       return stmt.getInt(ID_ACTOR);
-    }
+            stmt.setString(FIRST_NAME, actor.getName());
+            stmt.setString(LAST_NAME, actor.getLastName());
+            stmt.setString(BIRTHDATE, actor.getDateBirth().format(Actor.DATE_FORMATTER));
+            stmt.setString(PICTURE_PATH, actor.getPicturePath());
+            stmt.registerOutParameter(ID_ACTOR, Types.INTEGER);
+            stmt.executeUpdate();
+            return stmt.getInt(ID_ACTOR);
+        }
     }
 
     @Override
     public void createActors(List<Actor> actors) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(CREATE_ACTOR)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_ACTOR)) {
             for (Actor actor : actors) {
                 stmt.setString(FIRST_NAME, actor.getName());
                 stmt.setString(LAST_NAME, actor.getLastName());
@@ -62,75 +60,71 @@ public class ActorRepositorySql implements ActorRepository{
                 stmt.setString(PICTURE_PATH, actor.getPicturePath());
                 stmt.registerOutParameter(ID_ACTOR, Types.INTEGER);
                 stmt.executeUpdate();
+            }
         }
-    }
     }
 
     @Override
     public void updateActor(int id, Actor actor) throws Exception {
-         DataSource dataSource = DataSourceSingleton.getInstance();
-            try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(UPDATE_ACTOR)) {
-        
-                stmt.setString(FIRST_NAME, actor.getName());
-                stmt.setString(LAST_NAME, actor.getLastName());
-                stmt.setString(BIRTHDATE, actor.getDateBirth().format(Actor.DATE_FORMATTER));
-                stmt.setString(PICTURE_PATH, actor.getPicturePath());
-                stmt.setInt(ID_ACTOR, id);
-                stmt.executeUpdate();
-    }
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(UPDATE_ACTOR)) {
+
+            stmt.setString(FIRST_NAME, actor.getName());
+            stmt.setString(LAST_NAME, actor.getLastName());
+            stmt.setString(BIRTHDATE, actor.getDateBirth().format(Actor.DATE_FORMATTER));
+            stmt.setString(PICTURE_PATH, actor.getPicturePath());
+            stmt.setInt(ID_ACTOR, id);
+            stmt.executeUpdate();
+        }
     }
 
     @Override
     public void deleteActor(int id) throws Exception {
-         DataSource dataSource = DataSourceSingleton.getInstance();
-            try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(DELETE_ACTOR)) {
-                stmt.setInt(ID_ACTOR, id);
-                stmt.executeUpdate();
-    }
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(DELETE_ACTOR)) {
+            stmt.setInt(ID_ACTOR, id);
+            stmt.executeUpdate();
+        }
     }
 
     @Override
     public Optional<Actor> selectActor(int id) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-             try (Connection con = dataSource.getConnection();
-                  CallableStatement stmt = con.prepareCall(SELECT_ACTOR)) {
-                  stmt.setInt(ID_ACTOR, id);
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_ACTOR)) {
+            stmt.setInt(ID_ACTOR, id);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of( new Actor(
-                            rs.getInt(ID_ACTOR), 
-                            rs.getString(FIRST_NAME), 
+                    return Optional.of(new Actor(
+                            rs.getInt(ID_ACTOR),
+                            rs.getString(FIRST_NAME),
                             rs.getString(LAST_NAME),
                             LocalDate.parse(rs.getString(BIRTHDATE), Actor.DATE_FORMATTER),
                             rs.getString(PICTURE_PATH)
-                ));
+                    ));
+                }
             }
         }
-    }
-    return Optional.empty();
+        return Optional.empty();
     }
 
     @Override
     public List<Actor> selectActors() throws Exception {
-         List<Actor> actors = new ArrayList<>();
-            DataSource dataSource = DataSourceSingleton.getInstance();
-            try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_ACTORS)) {
-        
+        List<Actor> actors = new ArrayList<>();
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_ACTORS)) {
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     actors.add(new Actor(
-                        rs.getInt(ID_ACTOR),
-                        rs.getString(FIRST_NAME),
-                        rs.getString(LAST_NAME),
-                        LocalDate.parse(rs.getString(BIRTHDATE), Actor.DATE_FORMATTER),
-                        rs.getString(PICTURE_PATH)
-                ));
+                            rs.getInt(ID_ACTOR),
+                            rs.getString(FIRST_NAME),
+                            rs.getString(LAST_NAME),
+                            LocalDate.parse(rs.getString(BIRTHDATE), Actor.DATE_FORMATTER),
+                            rs.getString(PICTURE_PATH)
+                    ));
+                }
             }
         }
-    }
-    return actors;
+        return actors;
     }
 }

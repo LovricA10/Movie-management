@@ -154,10 +154,12 @@ public class EditGenrePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddGenreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddGenreActionPerformed
-        if (!formValid()) return;
+        if (!formValid()) {
+            return;
+        }
 
-       try {
-            
+        try {
+
             Genre genre = new Genre(
                     tfGenre.getText().trim()
             );
@@ -170,7 +172,7 @@ public class EditGenrePanel extends javax.swing.JPanel {
             Logger.getLogger(EditGenrePanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Error", "Unable to add genre!");
         }
-       
+
     }//GEN-LAST:event_btnAddGenreActionPerformed
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
@@ -178,7 +180,7 @@ public class EditGenrePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_formComponentShown
 
     private void btnUpdateGenreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateGenreActionPerformed
-         if (selectedgenre == null) {
+        if (selectedgenre == null) {
             MessageUtils.showInformationMessage("Wrong operation", "Please choose a genre to update");
             return;
         }
@@ -193,8 +195,8 @@ public class EditGenrePanel extends javax.swing.JPanel {
             genresTableModel.setGenres(genreRepository.selectGenres());
             clearForm();
             MessageUtils.showInformationMessage("Success", "genre updated!");
-        
-    }catch (DateTimeException ex) {
+
+        } catch (DateTimeException ex) {
             lbGenreError.setVisible(true);
         } catch (Exception ex) {
             Logger.getLogger(EditGenrePanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -228,7 +230,6 @@ public class EditGenrePanel extends javax.swing.JPanel {
         showGenre();
     }//GEN-LAST:event_tbGenresKeyReleased
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddGenre;
     private javax.swing.JButton btnDeleteGenre;
@@ -245,7 +246,7 @@ public class EditGenrePanel extends javax.swing.JPanel {
     private Genre selectedgenre;
     private GenreTableModel genresTableModel;
     private GenreRepository genreRepository;
-    
+
     private void init() {
         try {
             initValidation();
@@ -272,11 +273,11 @@ public class EditGenrePanel extends javax.swing.JPanel {
         validationMap.values().forEach(label -> label.setVisible(false));
     }
 
-    private void initRepository() throws Exception{
-         genreRepository = RepositoryFactory.getRepository(GenreRepository.class);
+    private void initRepository() throws Exception {
+        genreRepository = RepositoryFactory.getRepository(GenreRepository.class);
     }
 
-    private void initTable() throws Exception{
+    private void initTable() throws Exception {
         tbGenres.setRowHeight(25);
         tbGenres.setAutoCreateRowSorter(true);
         tbGenres.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -287,22 +288,22 @@ public class EditGenrePanel extends javax.swing.JPanel {
     private boolean formValid() {
         hideErrors();
         boolean ok = true;
-        
+
         for (Map.Entry<JTextComponent, JLabel> entry : validationMap.entrySet()) {
-        JTextComponent field = entry.getKey();
-        JLabel errorLabel = entry.getValue();
-        String text = field.getText().trim();
-        boolean isEmpty = text.isEmpty();
-       
-        ok &= !isEmpty;
-        errorLabel.setVisible(isEmpty);
+            JTextComponent field = entry.getKey();
+            JLabel errorLabel = entry.getValue();
+            String text = field.getText().trim();
+            boolean isEmpty = text.isEmpty();
+
+            ok &= !isEmpty;
+            errorLabel.setVisible(isEmpty);
         }
 
         return ok;
-}
+    }
 
     private void clearForm() {
-         hideErrors();
+        hideErrors();
         validationMap.keySet().forEach(field -> field.setText(""));
         selectedgenre = null;
     }
@@ -318,7 +319,7 @@ public class EditGenrePanel extends javax.swing.JPanel {
             if (optionalgenre.isPresent()) {
                 selectedgenre = optionalgenre.get();
                 fillForm(selectedgenre);
-                
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -327,7 +328,7 @@ public class EditGenrePanel extends javax.swing.JPanel {
         }
     }
 
-    private void fillForm(Genre genre) throws Exception{
+    private void fillForm(Genre genre) throws Exception {
         tfGenre.setText(genre.getGenreName());
 
     }

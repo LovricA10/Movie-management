@@ -20,8 +20,8 @@ import javax.sql.DataSource;
  *
  * @author Lovric
  */
-public class DirectorRepositorySql implements DirectorRepository{
- 
+public class DirectorRepositorySql implements DirectorRepository {
+
     private static final String ID_DIRECTOR = "IDDirector";
     private static final String FIRST_NAME = "Name";
     private static final String LAST_NAME = "LastName";
@@ -37,23 +37,21 @@ public class DirectorRepositorySql implements DirectorRepository{
     @Override
     public int createDirector(Director director) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(CREATE_DIRECTOR)) {
-                    stmt.setString(FIRST_NAME, director.getName());
-                    stmt.setString(LAST_NAME, director.getLastName());
-                    stmt.setString(BIRTHDATE, director.getDateBirth().format(Director.DATE_FORMATTER));
-                    stmt.setString(PICTURE_PATH, director.getPicturePath());
-                    stmt.registerOutParameter(ID_DIRECTOR, Types.INTEGER);
-                    stmt.executeUpdate();
-                    return stmt.getInt(ID_DIRECTOR);
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_DIRECTOR)) {
+            stmt.setString(FIRST_NAME, director.getName());
+            stmt.setString(LAST_NAME, director.getLastName());
+            stmt.setString(BIRTHDATE, director.getDateBirth().format(Director.DATE_FORMATTER));
+            stmt.setString(PICTURE_PATH, director.getPicturePath());
+            stmt.registerOutParameter(ID_DIRECTOR, Types.INTEGER);
+            stmt.executeUpdate();
+            return stmt.getInt(ID_DIRECTOR);
         }
     }
 
     @Override
     public void createDirectors(List<Director> directors) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CREATE_DIRECTOR)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_DIRECTOR)) {
 
             for (Director director : directors) {
                 stmt.setString(FIRST_NAME, director.getName());
@@ -70,8 +68,7 @@ public class DirectorRepositorySql implements DirectorRepository{
     @Override
     public void updateDirector(int id, Director director) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(UPDATE_DIRECTOR)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(UPDATE_DIRECTOR)) {
 
             stmt.setString(FIRST_NAME, director.getName());
             stmt.setString(LAST_NAME, director.getLastName());
@@ -86,8 +83,7 @@ public class DirectorRepositorySql implements DirectorRepository{
     @Override
     public void deleteDirector(int id) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(DELETE_DIRECTOR)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(DELETE_DIRECTOR)) {
 
             stmt.setInt(ID_DIRECTOR, id);
             stmt.executeUpdate();
@@ -96,9 +92,8 @@ public class DirectorRepositorySql implements DirectorRepository{
 
     @Override
     public Optional<Director> selectDirector(int id) throws Exception {
-         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(SELECT_DIRECTOR)) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_DIRECTOR)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -120,9 +115,7 @@ public class DirectorRepositorySql implements DirectorRepository{
     public List<Director> selectDirectors() throws Exception {
         List<Director> directors = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(SELECT_DIRECTORS);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_DIRECTORS); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 directors.add(new Director(
@@ -136,4 +129,4 @@ public class DirectorRepositorySql implements DirectorRepository{
         }
         return directors;
     }
- }
+}

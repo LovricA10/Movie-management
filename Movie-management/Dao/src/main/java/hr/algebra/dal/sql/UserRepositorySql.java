@@ -20,8 +20,8 @@ import javax.sql.DataSource;
  *
  * @author Lovric
  */
-public class UserRepositorySql implements UserRepository{
-    
+public class UserRepositorySql implements UserRepository {
+
     private static final String ID_USER = "IDUser";
     private static final String USERNAME = "Username";
     private static final String PASSWORD = "Password";
@@ -36,8 +36,7 @@ public class UserRepositorySql implements UserRepository{
     @Override
     public int createUser(User user) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CREATE_USER)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_USER)) {
 
             stmt.setString(USERNAME, user.getUsername());
             stmt.setString(PASSWORD, user.getPassword());
@@ -52,8 +51,7 @@ public class UserRepositorySql implements UserRepository{
     @Override
     public void createUsers(List<User> users) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CREATE_USER)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_USER)) {
 
             for (User user : users) {
                 stmt.setString(USERNAME, user.getUsername());
@@ -64,13 +62,12 @@ public class UserRepositorySql implements UserRepository{
                 stmt.executeUpdate();
             }
         }
-    }   
+    }
 
     @Override
     public void updateUser(int id, User data) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(UPDATE_USER)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(UPDATE_USER)) {
 
             stmt.setString(USERNAME, data.getUsername());
             stmt.setString(PASSWORD, data.getPassword());
@@ -84,8 +81,7 @@ public class UserRepositorySql implements UserRepository{
     @Override
     public void deleteUser(int id) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(DELETE_USER)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(DELETE_USER)) {
 
             stmt.setInt(ID_USER, id);
             stmt.executeUpdate();
@@ -95,8 +91,7 @@ public class UserRepositorySql implements UserRepository{
     @Override
     public Optional<User> selectUser(int id) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(SELECT_USER)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_USER)) {
 
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -115,11 +110,9 @@ public class UserRepositorySql implements UserRepository{
 
     @Override
     public List<User> selectUsers() throws Exception {
-         List<User> users = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(SELECT_USERS);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_USERS); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 users.add(new User(

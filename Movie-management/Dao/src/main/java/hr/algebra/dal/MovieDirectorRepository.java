@@ -13,8 +13,12 @@ import java.util.List;
  * @author Lovric
  */
 public interface MovieDirectorRepository {
+
     int createMovieDirector(MovieDirector movieDirector) throws Exception;
-    void deleteMovieDirector(int movieId,int directorId) throws Exception;
+
+    void deleteMovieDirector(int movieId, int directorId) throws Exception;
+
     List<Director> selectDirectorsForMovie(int movieId) throws Exception;
+
     List<Director> selectDirectorsNotInMovie(int movieId) throws Exception;
 }

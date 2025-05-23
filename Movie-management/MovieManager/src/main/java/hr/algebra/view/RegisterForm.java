@@ -23,7 +23,6 @@ public class RegisterForm extends javax.swing.JFrame {
     /**
      * Creates new form LoginForm
      */
-    
     public RegisterForm() {
         initComponents();
         userRepository = new UserRepositorySql();
@@ -31,6 +30,7 @@ public class RegisterForm extends javax.swing.JFrame {
     }
 
     private static UserRepository userRepository;
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -133,7 +133,6 @@ public class RegisterForm extends javax.swing.JFrame {
         registerUser();
     }//GEN-LAST:event_btnRegisterActionPerformed
 
-    
     /**
      * @param args the command line arguments
      */
@@ -141,7 +140,7 @@ public class RegisterForm extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -183,46 +182,45 @@ public class RegisterForm extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void registerUser() {
-         if (formIsValid()) {
-        try {
-            String username = tfUsername.getText().trim();
-            String password = new String(pfPassword.getPassword());
-            
-            userRepository.createUser(new User(0, username, password, Role.USER));
-            
-            MessageUtils.showInformationMessage("Success", "User registered successfully!");
-            dispose();
-            
-            new LoginForm().setVisible(true);
-            
-        } catch (Exception ex) {
-            Logger.getLogger(RegisterForm.class.getName()).log(Level.SEVERE, null, ex);
-            MessageUtils.showErrorMessage("Error", "Error while trying to add user...");
+        if (formIsValid()) {
+            try {
+                String username = tfUsername.getText().trim();
+                String password = new String(pfPassword.getPassword());
+
+                userRepository.createUser(new User(0, username, password, Role.USER));
+
+                MessageUtils.showInformationMessage("Success", "User registered successfully!");
+                dispose();
+
+                new LoginForm().setVisible(true);
+
+            } catch (Exception ex) {
+                Logger.getLogger(RegisterForm.class.getName()).log(Level.SEVERE, null, ex);
+                MessageUtils.showErrorMessage("Error", "Error while trying to add user...");
+            }
         }
-    }
     }
 
     private void addEnterKeyListener() {
-    KeyAdapter enterListener = new KeyAdapter() {
-        @Override
-        public void keyReleased(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                registerUser();
+        KeyAdapter enterListener = new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    registerUser();
+                }
             }
-        }
-    };
+        };
 
-    tfUsername.addKeyListener(enterListener);
-    pfPassword.addKeyListener(enterListener);
-    pfConfirmPassword.addKeyListener(enterListener);
+        tfUsername.addKeyListener(enterListener);
+        pfPassword.addKeyListener(enterListener);
+        pfConfirmPassword.addKeyListener(enterListener);
     }
 
     private boolean formIsValid() {
         String username = tfUsername.getText().trim();
         String password = new String(pfPassword.getPassword());
         String confirmPassword = new String(pfConfirmPassword.getPassword());
-        
-        
+
         if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             lbWrongData.setText("Please fill in all fields.");
             return false;
@@ -231,24 +229,24 @@ public class RegisterForm extends javax.swing.JFrame {
             lbWrongData.setText("Passwords do not match.");
             return false;
         }
-        
+
         try {
             boolean userExists = userRepository
                     .selectUsers()
                     .stream()
                     .anyMatch(u -> u.getUsername().equals(username));
 
-        if (userExists) {
-            lbWrongData.setText("Username is already taken.");
+            if (userExists) {
+                lbWrongData.setText("Username is already taken.");
+                return false;
+            }
+        } catch (Exception e) {
+            lbWrongData.setText("Error checking user existence.");
+            Logger.getLogger(RegisterForm.class.getName()).log(Level.SEVERE, null, e);
             return false;
         }
-    } catch (Exception e) {
-        lbWrongData.setText("Error checking user existence.");
-        Logger.getLogger(RegisterForm.class.getName()).log(Level.SEVERE, null, e);
-        return false;
-    }
 
-    lbWrongData.setText("");
-    return true;
+        lbWrongData.setText("");
+        return true;
     }
 }

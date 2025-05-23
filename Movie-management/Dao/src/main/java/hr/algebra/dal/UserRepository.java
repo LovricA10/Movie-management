@@ -14,13 +14,17 @@ import java.util.Optional;
  * @author dnlbe
  */
 public interface UserRepository {
-    
+
     int createUser(User user) throws Exception;
+
     void createUsers(List<User> users) throws Exception;
+
     void updateUser(int id, User data) throws Exception;
+
     void deleteUser(int id) throws Exception;
+
     Optional<User> selectUser(int id) throws Exception;
+
     List<User> selectUsers() throws Exception;
 
-    //public boolean checkIfUserNameExists(String text);
 }

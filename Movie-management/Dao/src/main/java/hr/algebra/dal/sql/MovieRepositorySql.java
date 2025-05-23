@@ -25,119 +25,110 @@ public class MovieRepositorySql implements MovieRepository {
     private static final String START_DATE = "StartDate";
     private static final String PICTURE_PATH = "PicturePath";
 
-   private static final String  CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?) }";
+    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?) }";
     private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }";
-   // private static final String SELECT_MOVIES_BY_DIRECTOR_ID = "{ CALL selectMoviesByDirectorId(?) }";
-    
+
     @Override
     public int createMovie(Movie movie) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-            try(Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
-                stmt.setString(TITLE, movie.getTitle());
-                stmt.setString(LINK, movie.getLink());
-                stmt.setString(DESCRIPTION, movie.getDescription());
-                stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
-                stmt.setString(PICTURE_PATH, movie.getPicturePath());
-                
-                stmt.registerOutParameter(ID_MOVIE, Types.INTEGER);
-                stmt.executeUpdate();
-                return stmt.getInt(ID_MOVIE);
-            }
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
+            stmt.setString(TITLE, movie.getTitle());
+            stmt.setString(LINK, movie.getLink());
+            stmt.setString(DESCRIPTION, movie.getDescription());
+            stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
+            stmt.setString(PICTURE_PATH, movie.getPicturePath());
+
+            stmt.registerOutParameter(ID_MOVIE, Types.INTEGER);
+            stmt.executeUpdate();
+            return stmt.getInt(ID_MOVIE);
+        }
     }
 
     @Override
     public void createMovies(List<Movie> movies) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-            try(Connection con = dataSource.getConnection();
-                    CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
-                for (Movie movie : movies) {
-                     stmt.setString(TITLE, movie.getTitle());
-                     stmt.setString(LINK, movie.getLink());
-                    stmt.setString(DESCRIPTION, movie.getDescription());
-                   // stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
-                    stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
-                    System.out.println(movie);
-                    stmt.setString(PICTURE_PATH, movie.getPicturePath());
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_MOVIE)) {
+            for (Movie movie : movies) {
+                stmt.setString(TITLE, movie.getTitle());
+                stmt.setString(LINK, movie.getLink());
+                stmt.setString(DESCRIPTION, movie.getDescription());
+                stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
+                System.out.println(movie);
+                stmt.setString(PICTURE_PATH, movie.getPicturePath());
 
-                    stmt.registerOutParameter(ID_MOVIE, Types.INTEGER);
+                stmt.registerOutParameter(ID_MOVIE, Types.INTEGER);
 
-                    stmt.executeUpdate();
-                }
+                stmt.executeUpdate();
+            }
+        }
     }
- }
+
     @Override
     public void updateMovie(int id, Movie movie) throws Exception {
-         DataSource dataSource = DataSourceSingleton.getInstance();
-            try(Connection con = dataSource.getConnection();
-                    CallableStatement stmt = con.prepareCall(UPDATE_MOVIE)) {
-                    stmt.setString(TITLE, movie.getTitle());
-                    stmt.setString(LINK, movie.getLink());
-                    stmt.setString(DESCRIPTION, movie.getDescription());
-                    stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
-                    stmt.setString(PICTURE_PATH, movie.getPicturePath());
-                    stmt.setInt(ID_MOVIE, id);
-                    
-                    stmt.executeUpdate();
-            }
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(UPDATE_MOVIE)) {
+            stmt.setString(TITLE, movie.getTitle());
+            stmt.setString(LINK, movie.getLink());
+            stmt.setString(DESCRIPTION, movie.getDescription());
+            stmt.setString(START_DATE, movie.getStartDate().format(Movie.DATE_FORMATTER));
+            stmt.setString(PICTURE_PATH, movie.getPicturePath());
+            stmt.setInt(ID_MOVIE, id);
+
+            stmt.executeUpdate();
+        }
     }
 
     @Override
     public void deleteMovie(int id) throws Exception {
-       DataSource dataSource = DataSourceSingleton.getInstance();
-            try(Connection con = dataSource.getConnection();
-                    CallableStatement stmt = con.prepareCall(DELETE_MOVIE)) {  
-                    stmt.setInt(ID_MOVIE, id);
-                    stmt.executeUpdate();
-            }
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(DELETE_MOVIE)) {
+            stmt.setInt(ID_MOVIE, id);
+            stmt.executeUpdate();
+        }
     }
 
     @Override
     public Optional<Movie> selectMovie(int id) throws Exception {
-      DataSource dataSource = DataSourceSingleton.getInstance();
-            try(Connection con = dataSource.getConnection();
-                    CallableStatement stmt = con.prepareCall(SELECT_MOVIE)) {  
-                    stmt.setInt(ID_MOVIE, id);
-               try (ResultSet rs = stmt.executeQuery()) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_MOVIE)) {
+            stmt.setInt(ID_MOVIE, id);
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                   return Optional.of(new Movie(
-                        rs.getInt(ID_MOVIE),
-                        rs.getString(TITLE),
-                        rs.getString(LINK),
-                        rs.getString(DESCRIPTION),
-                        LocalDateTime.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
-                        rs.getString(PICTURE_PATH)
-                ));
+                    return Optional.of(new Movie(
+                            rs.getInt(ID_MOVIE),
+                            rs.getString(TITLE),
+                            rs.getString(LINK),
+                            rs.getString(DESCRIPTION),
+                            LocalDateTime.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
+                            rs.getString(PICTURE_PATH)
+                    ));
+                }
             }
         }
-    } 
-            return Optional.empty();
+        return Optional.empty();
     }
 
     @Override
     public List<Movie> selectMovies() throws Exception {
-           List<Movie> movies = new ArrayList<>();
-              DataSource dataSource = DataSourceSingleton.getInstance();
-            try(Connection con = dataSource.getConnection();
-                    CallableStatement stmt = con.prepareCall(SELECT_MOVIES)) {  
-               try (ResultSet rs = stmt.executeQuery()) {
+        List<Movie> movies = new ArrayList<>();
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_MOVIES)) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                   movies.add(new Movie(
-                        rs.getInt(ID_MOVIE),
-                        rs.getString(TITLE),
-                        rs.getString(LINK),
-                        rs.getString(DESCRIPTION),
-                        LocalDateTime.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
-                        rs.getString(PICTURE_PATH)
-                ));
-           }
-            return movies;
+                    movies.add(new Movie(
+                            rs.getInt(ID_MOVIE),
+                            rs.getString(TITLE),
+                            rs.getString(LINK),
+                            rs.getString(DESCRIPTION),
+                            LocalDateTime.parse(rs.getString(START_DATE), Movie.DATE_FORMATTER),
+                            rs.getString(PICTURE_PATH)
+                    ));
+                }
+                return movies;
+            }
         }
     }
-  }
 }
-   
-     

@@ -13,10 +13,13 @@ import java.util.List;
  * @author Lovric
  */
 public interface MovieGenreRepository {
+
     int createMovieGenre(MovieGenre movieGenre) throws Exception;
-    void deleteMovieGenre(int movieId,int genreId) throws Exception;
+
+    void deleteMovieGenre(int movieId, int genreId) throws Exception;
+
     List<Genre> selectGenresForMovie(int movieId) throws Exception;
+
     List<Genre> selectGenresNotInMovie(int movieId) throws Exception;
-    
-   
+
 }

@@ -9,12 +9,14 @@ package hr.algebra.model;
  * @author Lovric
  */
 public final class Genre {
+
     private int id;
     private String genreName;
 
-    public Genre(){
-        
+    public Genre() {
+
     }
+
     public Genre(int id, String genreName) {
         this.id = id;
         this.genreName = genreName;
@@ -40,5 +42,4 @@ public final class Genre {
         this.genreName = genreName;
     }
 
-    
 }

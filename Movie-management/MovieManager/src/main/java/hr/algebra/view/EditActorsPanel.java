@@ -7,7 +7,6 @@ package hr.algebra.view;
 import hr.algebra.dal.ActorRepository;
 import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.Actor;
-import hr.algebra.model.Movie;
 import hr.algebra.utilities.FileUtils;
 import hr.algebra.utilities.IconUtils;
 import hr.algebra.utilities.MessageUtils;
@@ -237,9 +236,11 @@ public class EditActorsPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActorActionPerformed
-        if (!formValid()) return;
+        if (!formValid()) {
+            return;
+        }
 
-       try {
+        try {
             String localPicturePath = uploadPicture();
             Actor actor = new Actor(
                     tfName.getText().trim(),
@@ -256,7 +257,7 @@ public class EditActorsPanel extends javax.swing.JPanel {
             Logger.getLogger(EditActorsPanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Error", "Unable to add actor!");
         }
-       
+
     }//GEN-LAST:event_btnAddActorActionPerformed
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
@@ -264,7 +265,7 @@ public class EditActorsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_formComponentShown
 
     private void btnUpdateActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActorActionPerformed
-         if (selectedActor == null) {
+        if (selectedActor == null) {
             MessageUtils.showInformationMessage("Wrong operation", "Please choose a actor to update");
             return;
         }
@@ -289,8 +290,8 @@ public class EditActorsPanel extends javax.swing.JPanel {
             actorsTableModel.setActors(actorRepository.selectActors());
             clearForm();
             MessageUtils.showInformationMessage("Success", "Actor updated!");
-        
-    }catch (DateTimeException ex) {
+
+        } catch (DateTimeException ex) {
             lbDateError.setVisible(true);
         } catch (Exception ex) {
             Logger.getLogger(EditActorsPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -328,13 +329,12 @@ public class EditActorsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_tbActorsKeyReleased
 
     private void btnChooseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChooseActionPerformed
-         Optional<File> optionalFile = FileUtils.uploadFile("Images", "jpg", "jpeg", "png");
-            optionalFile.ifPresent(file -> {
+        Optional<File> optionalFile = FileUtils.uploadFile("Images", "jpg", "jpeg", "png");
+        optionalFile.ifPresent(file -> {
             tfPicturePath.setText(file.getAbsolutePath());
             setIcon(lbIcon, file);
         });
     }//GEN-LAST:event_btnChooseActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddActor;
@@ -362,7 +362,7 @@ public class EditActorsPanel extends javax.swing.JPanel {
     private Actor selectedActor;
     private ActorTableModel actorsTableModel;
     private ActorRepository actorRepository;
-    
+
     private void init() {
         try {
             initValidation();
@@ -392,11 +392,11 @@ public class EditActorsPanel extends javax.swing.JPanel {
         validationMap.values().forEach(label -> label.setVisible(false));
     }
 
-    private void initRepository() throws Exception{
-         actorRepository = RepositoryFactory.getRepository(ActorRepository.class);
+    private void initRepository() throws Exception {
+        actorRepository = RepositoryFactory.getRepository(ActorRepository.class);
     }
 
-    private void initTable() throws Exception{
+    private void initTable() throws Exception {
         tbActors.setRowHeight(25);
         tbActors.setAutoCreateRowSorter(true);
         tbActors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -407,17 +407,17 @@ public class EditActorsPanel extends javax.swing.JPanel {
     private boolean formValid() {
         hideErrors();
         boolean ok = true;
-        
-        for (Map.Entry<JTextComponent, JLabel> entry : validationMap.entrySet()) {
-        JTextComponent field = entry.getKey();
-        JLabel errorLabel = entry.getValue();
-        String text = field.getText().trim();
-        boolean isEmpty = text.isEmpty();
-       
-        ok &= !isEmpty;
-        errorLabel.setVisible(isEmpty);
 
-       if (field == tfDateBirth && !isEmpty) {
+        for (Map.Entry<JTextComponent, JLabel> entry : validationMap.entrySet()) {
+            JTextComponent field = entry.getKey();
+            JLabel errorLabel = entry.getValue();
+            String text = field.getText().trim();
+            boolean isEmpty = text.isEmpty();
+
+            ok &= !isEmpty;
+            errorLabel.setVisible(isEmpty);
+
+            if (field == tfDateBirth && !isEmpty) {
                 try {
                     LocalDate.parse(text, Actor.DATE_FORMATTER);
                 } catch (Exception e) {
@@ -428,10 +428,10 @@ public class EditActorsPanel extends javax.swing.JPanel {
         }
 
         return ok;
-}
+    }
 
     private void clearForm() {
-         hideErrors();
+        hideErrors();
         validationMap.keySet().forEach(field -> field.setText(""));
         lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png")));
         selectedActor = null;
@@ -448,7 +448,7 @@ public class EditActorsPanel extends javax.swing.JPanel {
             if (optionalActor.isPresent()) {
                 selectedActor = optionalActor.get();
                 fillForm(selectedActor);
-                
+
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -457,14 +457,13 @@ public class EditActorsPanel extends javax.swing.JPanel {
         }
     }
 
-    private void fillForm(Actor actor) throws Exception{
-         if (actor.getPicturePath() != null && Files.exists(Paths.get(actor.getPicturePath()))) {
+    private void fillForm(Actor actor) throws Exception {
+        if (actor.getPicturePath() != null && Files.exists(Paths.get(actor.getPicturePath()))) {
             tfPicturePath.setText(actor.getPicturePath());
             setIcon(lbIcon, new File(actor.getPicturePath()));
-         }
-         else {
-             lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png")));
-         }
+        } else {
+            lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/assets/no_image.png")));
+        }
         tfName.setText(actor.getName());
         tfLastName.setText(actor.getLastName());
         tfDateBirth.setText(actor.getDateBirth() != null
@@ -479,7 +478,7 @@ public class EditActorsPanel extends javax.swing.JPanel {
     }
 
     private void setIcon(JLabel label, File file) {
-         try {
+        try {
             label.setIcon(IconUtils.createIcon(file, label.getWidth(), label.getHeight()));
         } catch (IOException ex) {
             Logger.getLogger(EditMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
@@ -492,7 +491,7 @@ public class EditActorsPanel extends javax.swing.JPanel {
         String ext = picturePath.substring(picturePath.lastIndexOf("."));
         String pictureName = UUID.randomUUID() + ext;
         String localPicturePath = DIR + File.separator + pictureName;
-        
+
         FileUtils.copy(picturePath, localPicturePath);
         return localPicturePath;
     }

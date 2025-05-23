@@ -26,12 +26,12 @@ public class FileUtils {
 
     public static void copy(String source, String destination) throws IOException {
         createDirPath(destination);
-        Files.copy(Paths.get(source),Paths.get(destination));
+        Files.copy(Paths.get(source), Paths.get(destination));
     }
 
     private static void createDirPath(String destination) throws IOException {
-        String dir = destination.substring(0,destination.lastIndexOf(File.separator));
-        
+        String dir = destination.substring(0, destination.lastIndexOf(File.separator));
+
         if (!Files.exists(Paths.get(dir))) {
             Files.createDirectories(Paths.get(dir));
         }
@@ -39,18 +39,19 @@ public class FileUtils {
 
     public static void copyFromUrl(String source, String destination) throws Exception {
         createDirPath(destination);
-         HttpURLConnection con = UrlConFactory.getCon(source);
-         try(InputStream is = con.getInputStream()) {
-          Files.copy(is,Paths.get(destination));
+        HttpURLConnection con = UrlConFactory.getCon(source);
+        try (InputStream is = con.getInputStream()) {
+            Files.copy(is, Paths.get(destination));
         }
-       
+
     }
 
-    private FileUtils() {}
-    
+    private FileUtils() {
+    }
+
     private static final String UPLOAD = "Upload";
 
-    public static Optional<File> uploadFile(String description, String...extensions) {
+    public static Optional<File> uploadFile(String description, String... extensions) {
         JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         chooser.setFileFilter(new FileNameExtensionFilter(description, extensions));
         chooser.setDialogTitle(UPLOAD);

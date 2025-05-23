@@ -25,7 +25,6 @@ public class LoginForm extends javax.swing.JFrame {
     /**
      * Creates new form LoginForm
      */
-    
     public LoginForm() {
         initComponents();
         userRepository = new UserRepositorySql();
@@ -33,6 +32,7 @@ public class LoginForm extends javax.swing.JFrame {
     }
 
     private static UserRepository userRepository;
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -143,13 +143,13 @@ public class LoginForm extends javax.swing.JFrame {
             if (formIsValid()) {
                 String username = tfUsername.getText().trim();
                 String password = new String(pfPassword.getPassword());
-                
+
                 Optional<User> userOptional = userRepository
                         .selectUsers()
                         .stream()
                         .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))
                         .findFirst();
-                
+
                 if (userOptional.isPresent()) {
                     AppPreference.saveLoggedInUser(userOptional.get().getUsername());
                     dispose();
@@ -169,7 +169,7 @@ public class LoginForm extends javax.swing.JFrame {
             new RegisterForm().setVisible(true);
             dispose();
         } catch (Exception ex) {
-            Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE,null,ex);
+            Logger.getLogger(LoginForm.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Error", "Unable to open register form");
             System.exit(1);
         }
@@ -182,7 +182,7 @@ public class LoginForm extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -224,24 +224,24 @@ public class LoginForm extends javax.swing.JFrame {
     private boolean formIsValid() {
         String username = tfUsername.getText().trim();
         String password = new String(pfPassword.getPassword());
-        
+
         if (username.isEmpty() || password.isEmpty()) {
-        lbWrongData.setText("Please enter both username and password.");
-        return false;
+            lbWrongData.setText("Please enter both username and password.");
+            return false;
         }
         return true;
     }
 
     private void addEnterKeyListener() {
-     KeyAdapter enterListener = new KeyAdapter() {
-         @Override
-         public void keyReleased(KeyEvent e) {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                loginUser();
+        KeyAdapter enterListener = new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    loginUser();
+                }
             }
-        }
-    };
-     tfUsername.addKeyListener(enterListener);
-     pfPassword.addKeyListener(enterListener);
+        };
+        tfUsername.addKeyListener(enterListener);
+        pfPassword.addKeyListener(enterListener);
     }
 }

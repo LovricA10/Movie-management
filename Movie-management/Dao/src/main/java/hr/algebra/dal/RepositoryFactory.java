@@ -25,22 +25,22 @@ public class RepositoryFactory {
     private static MovieActorRepository movieActorRepository;
     private static MovieGenreRepository movieGenreRepository;
     private static MovieUserRepository movieUserRepository;
-    
+    private static AdminRepository adminRepository;
+
     private static final Properties PROPERTIES = new Properties();
     private static final String PATH = "/config/repository.properties";
     //private static final String CLASS_NAME = "CLASS_NAME";
-    private static final Map<Class<?>,Object> REPOSITORIES = new HashMap<>();
-    
-    
+    private static final Map<Class<?>, Object> REPOSITORIES = new HashMap<>();
+
     static {
-        try (InputStream is = RepositoryFactory.class.getResourceAsStream(PATH)){
+        try (InputStream is = RepositoryFactory.class.getResourceAsStream(PATH)) {
             PROPERTIES.load(is);
             for (String interfaceName : PROPERTIES.stringPropertyNames()) {
-                    Class<?> interfaceClass = Class.forName(interfaceName);
-                    Class<?> implClass = Class.forName(PROPERTIES.getProperty(interfaceName));
-                    Object instance = implClass.getDeclaredConstructor().newInstance();
-                    REPOSITORIES.put(interfaceClass, instance);
-}
+                Class<?> interfaceClass = Class.forName(interfaceName);
+                Class<?> implClass = Class.forName(PROPERTIES.getProperty(interfaceName));
+                Object instance = implClass.getDeclaredConstructor().newInstance();
+                REPOSITORIES.put(interfaceClass, instance);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,8 +48,9 @@ public class RepositoryFactory {
 
     private RepositoryFactory() {
     }
+
     // LAZY SINGLETON
-   public static <T> T getRepository(Class<T> repoType) {
+    public static <T> T getRepository(Class<T> repoType) {
         return (T) REPOSITORIES.get(repoType);
-}
+    }
 }

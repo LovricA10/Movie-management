@@ -12,18 +12,19 @@ import java.time.format.DateTimeFormatter;
  * @author Lovric
  */
 public final class Director {
-    
+
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     private int id;
     private String name;
     private String lastName;
     private LocalDate dateBirth;
     private String picturePath;
-    
-    public Director(){
-        
+
+    public Director() {
+
     }
-    public Director(int id, String name, String lastName, LocalDate dateBirth,String picturePath) {
+
+    public Director(int id, String name, String lastName, LocalDate dateBirth, String picturePath) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -31,7 +32,7 @@ public final class Director {
         this.picturePath = picturePath;
     }
 
-    public Director(String name, String lastName, LocalDate dateBirth,String picturePath) {
+    public Director(String name, String lastName, LocalDate dateBirth, String picturePath) {
         this.name = name;
         this.lastName = lastName;
         this.dateBirth = dateBirth;
@@ -69,6 +70,7 @@ public final class Director {
     public void setDateBirth(LocalDate dateBirth) {
         this.dateBirth = dateBirth;
     }
+
     public String getPicturePath() {
         return picturePath;
     }
@@ -79,10 +81,29 @@ public final class Director {
 
     @Override
     public String toString() {
-        return "Director{" + "id=" + id + ", name=" + name + ", lastName=" + lastName + ", dateBirth=" + dateBirth + '}';
+        return name + " " + lastName;
     }
-    
-    
-    
-    
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + this.id;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Director other = (Director) obj;
+        return this.id == other.id;
+    }
+
 }

@@ -13,8 +13,8 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author dnlbe
  */
-public class MovieTableModel extends AbstractTableModel{
-    
+public class MovieTableModel extends AbstractTableModel {
+
     private static final String[] COLUMN_NAMES = {
         "ID",
         "Title",
@@ -23,10 +23,10 @@ public class MovieTableModel extends AbstractTableModel{
         "Start Date",
         "Picture Path"
     };
-    
+
     private List<Movie> movies;
 
-     public MovieTableModel(List<Movie> movies) {
+    public MovieTableModel(List<Movie> movies) {
         this.movies = movies;
     }
 
@@ -34,7 +34,7 @@ public class MovieTableModel extends AbstractTableModel{
         this.movies = movies;
         fireTableDataChanged();
     }
-    
+
     @Override
     public int getRowCount() {
         return movies.size();
@@ -47,17 +47,25 @@ public class MovieTableModel extends AbstractTableModel{
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-         Movie movie = movies.get(rowIndex);
+        Movie movie = movies.get(rowIndex);
         return switch (columnIndex) {
-            case 0 -> movie.getId();
-            case 1 -> movie.getTitle();
-            case 2 -> movie.getLink();
-            case 3 -> movie.getDescription();
-            case 4 -> movie.getStartDate().format(Movie.DATE_FORMATTER);
-            case 5 -> movie.getPicturePath();
-            default -> throw new RuntimeException("No such column");
+            case 0 ->
+                movie.getId();
+            case 1 ->
+                movie.getTitle();
+            case 2 ->
+                movie.getLink();
+            case 3 ->
+                movie.getDescription();
+            case 4 ->
+                movie.getStartDate().format(Movie.DATE_FORMATTER);
+            case 5 ->
+                movie.getPicturePath();
+            default ->
+                throw new RuntimeException("No such column");
         };
-        }
+    }
+
     @Override
     public String getColumnName(int column) {
         return COLUMN_NAMES[column];
@@ -65,16 +73,18 @@ public class MovieTableModel extends AbstractTableModel{
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-      return switch (columnIndex) {
-        case 0 -> Integer.class;
-        default -> String.class;
-    };
-      
-      /* public Class<?> getColumnClass(int columnIndex) {
+        return switch (columnIndex) {
+            case 0 ->
+                Integer.class;
+            default ->
+                String.class;
+        };
+
+        /* public Class<?> getColumnClass(int columnIndex) {
         switch (columnIndex) {
             case 0:
                 return Integer.class;
         }
         return super.getColumnClass(columnIndex);*/
-  }
+    }
 }

@@ -19,7 +19,8 @@ import javax.sql.DataSource;
  *
  * @author Lovric
  */
-public class GenreRepositorySql implements GenreRepository{
+public class GenreRepositorySql implements GenreRepository {
+
     private static final String ID_GENRE = "IDGenre";
     private static final String GENRE_NAME = "GenreName";
 
@@ -32,8 +33,7 @@ public class GenreRepositorySql implements GenreRepository{
     @Override
     public int createGenre(Genre genre) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CREATE_GENRE)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_GENRE)) {
 
             stmt.setString(GENRE_NAME, genre.getGenreName());
             stmt.registerOutParameter(ID_GENRE, Types.INTEGER);
@@ -46,8 +46,7 @@ public class GenreRepositorySql implements GenreRepository{
     @Override
     public void createGenres(List<Genre> genres) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CREATE_GENRE)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_GENRE)) {
 
             for (Genre genre : genres) {
                 stmt.setString(GENRE_NAME, genre.getGenreName());
@@ -61,8 +60,7 @@ public class GenreRepositorySql implements GenreRepository{
     @Override
     public void updateGenre(int id, Genre genre) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(UPDATE_GENRE)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(UPDATE_GENRE)) {
 
             stmt.setString(GENRE_NAME, genre.getGenreName());
             stmt.setInt(ID_GENRE, id);
@@ -73,20 +71,18 @@ public class GenreRepositorySql implements GenreRepository{
 
     @Override
     public void deleteGenre(int id) throws Exception {
-         DataSource dataSource = DataSourceSingleton.getInstance();
-         try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(DELETE_GENRE)) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(DELETE_GENRE)) {
 
-             stmt.setInt(ID_GENRE, id);
-             stmt.executeUpdate();
+            stmt.setInt(ID_GENRE, id);
+            stmt.executeUpdate();
         }
     }
 
     @Override
     public Optional<Genre> selectGenre(int id) throws Exception {
-         DataSource dataSource = DataSourceSingleton.getInstance();
-         try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(SELECT_GENRE)) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_GENRE)) {
 
             stmt.setInt(ID_GENRE, id);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -103,11 +99,9 @@ public class GenreRepositorySql implements GenreRepository{
 
     @Override
     public List<Genre> selectGenres() throws Exception {
-         List<Genre> genres = new ArrayList<>();
+        List<Genre> genres = new ArrayList<>();
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(SELECT_GENRES);
-             ResultSet rs = stmt.executeQuery()) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_GENRES); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 genres.add(new Genre(
@@ -118,5 +112,4 @@ public class GenreRepositorySql implements GenreRepository{
         }
         return genres;
     }
-    }
-
+}

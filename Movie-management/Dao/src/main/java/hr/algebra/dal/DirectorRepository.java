@@ -13,10 +13,16 @@ import java.util.Optional;
  * @author Lovric
  */
 public interface DirectorRepository {
+
     int createDirector(Director director) throws Exception;
+
     void createDirectors(List<Director> directors) throws Exception;
+
     void updateDirector(int id, Director data) throws Exception;
+
     void deleteDirector(int id) throws Exception;
+
     Optional<Director> selectDirector(int id) throws Exception;
+
     List<Director> selectDirectors() throws Exception;
 }

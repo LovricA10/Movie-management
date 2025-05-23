@@ -4,17 +4,27 @@
  */
 package hr.algebra.view;
 
+import hr.algebra.dal.ActorRepository;
+import hr.algebra.dal.DirectorRepository;
 import hr.algebra.dal.MovieActorRepository;
 import hr.algebra.dal.MovieDirectorRepository;
 import hr.algebra.dal.MovieRepository;
 import hr.algebra.dal.RepositoryFactory;
+import hr.algebra.helper.GenericTransferable;
 import hr.algebra.model.Actor;
 import hr.algebra.model.Director;
 import hr.algebra.model.Movie;
+import hr.algebra.model.MovieActor;
+import hr.algebra.model.MovieDirector;
 import hr.algebra.utilities.MessageUtils;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.DropMode;
+import javax.swing.TransferHandler;
 
 /**
  *
@@ -52,7 +62,6 @@ public class DragAndDropPanel extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        btnSave = new javax.swing.JButton();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -92,10 +101,6 @@ public class DragAndDropPanel extends javax.swing.JPanel {
 
         jLabel5.setText("Assigned directors:");
 
-        btnSave.setBackground(new java.awt.Color(255, 51, 51));
-        btnSave.setForeground(new java.awt.Color(255, 255, 255));
-        btnSave.setText("SAVE");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -120,11 +125,8 @@ public class DragAndDropPanel extends javax.swing.JPanel {
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(196, 196, 196)
-                                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(213, Short.MAX_VALUE))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(326, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -144,9 +146,8 @@ public class DragAndDropPanel extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel5)
-                    .addComponent(btnSave))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -154,6 +155,12 @@ public class DragAndDropPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private boolean isReadOnly;
+
+    public DragAndDropPanel(boolean isReadOnly) {
+        this.isReadOnly = isReadOnly;
+        initComponents();
+    }
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         init();
     }//GEN-LAST:event_formComponentShown
@@ -161,15 +168,33 @@ public class DragAndDropPanel extends javax.swing.JPanel {
     private void init() {
         initRepository();
         loadMovies();
+        initDragAndDrop();
+
+        cbMoviesActionPerformed(null);
     }
 
     private void cbMoviesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbMoviesActionPerformed
-         Movie selectedMovie = (Movie)cbMovies.getSelectedItem();
+
+        Movie selectedMovie = (Movie) cbMovies.getSelectedItem();
+
+        if (selectedMovie != null) {
+            try {
+                int movieId = selectedMovie.getId();
+                assignedActors = movieActorRepository.selectActorsForMovie(movieId);
+                availableActors = movieActorRepository.selectActorsNotInMovie(movieId);
+                assignedDirectors = movieDirectorRepository.selectDirectorsForMovie(movieId);
+                availableDirectors = movieDirectorRepository.selectDirectorsNotInMovie(movieId);
+
+                updateActorLists();
+                updateDirectorLists();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                MessageUtils.showErrorMessage("Loading Error", "Failed to load actors or directors for selected movie.");
+            }
     }//GEN-LAST:event_cbMoviesActionPerformed
 
-
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnSave;
     private javax.swing.JComboBox<Movie> cbMovies;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -180,40 +205,172 @@ public class DragAndDropPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JList<Movie> lsAssignedActors;
-    private javax.swing.JList<Movie> lsAssignedDirectors;
-    private javax.swing.JList<Movie> lsAvailableActors;
-    private javax.swing.JList<Movie> lsAvailableDirectors;
+    private javax.swing.JList<Actor> lsAssignedActors;
+    private javax.swing.JList<Director> lsAssignedDirectors;
+    private javax.swing.JList<Actor> lsAvailableActors;
+    private javax.swing.JList<Director> lsAvailableDirectors;
     // End of variables declaration//GEN-END:variables
 
-   
     private List<Actor> availableActors = new ArrayList<>();
     private List<Actor> assignedActors = new ArrayList<>();
     private List<Director> availableDirectors = new ArrayList<>();
     private List<Director> assignedDirectors = new ArrayList<>();
 
-    
     private MovieRepository movieRepository;
     private MovieActorRepository movieActorRepository;
     private MovieDirectorRepository movieDirectorRepository;
-    
+    private ActorRepository actorRepository;
+    private DirectorRepository directorRepository;
+
     private void loadMovies() {
         try {
             List<Movie> movies = movieRepository.selectMovies();
             DefaultComboBoxModel<Movie> model = new DefaultComboBoxModel<>();
             movies.forEach(model::addElement);
             cbMovies.setModel(model);
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        MessageUtils.showErrorMessage("Loading Error", "Failed to load movies from database.");
-    }
+            if (!movies.isEmpty()) {
+                cbMovies.setSelectedIndex(0);
+                cbMoviesActionPerformed(null);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            MessageUtils.showErrorMessage("Loading Error", "Failed to load movies from database.");
+        }
     }
 
     private void initRepository() {
         movieRepository = RepositoryFactory.getRepository(MovieRepository.class);
         movieActorRepository = RepositoryFactory.getRepository(MovieActorRepository.class);
         movieDirectorRepository = RepositoryFactory.getRepository(MovieDirectorRepository.class);
+        actorRepository = RepositoryFactory.getRepository(ActorRepository.class);
+        directorRepository = RepositoryFactory.getRepository(DirectorRepository.class);
     }
-    
-   
+
+    private void initDragAndDrop() {
+        if (isReadOnly) {
+            return;
+        }
+        initActorDragAndDrop();
+        initDirectorDragAndDrop();
+    }
+
+    private void updateActorLists() {
+        Set<Actor> uniqueAssigned = new LinkedHashSet<>(assignedActors);
+        Set<Actor> uniqueAvailable = new LinkedHashSet<>(availableActors);
+
+        DefaultListModel<Actor> availableModel = new DefaultListModel<>();
+        uniqueAvailable.forEach(availableModel::addElement);
+        lsAvailableActors.setModel(availableModel);
+
+        DefaultListModel<Actor> assignedModel = new DefaultListModel<>();
+        uniqueAssigned.forEach(assignedModel::addElement);
+        lsAssignedActors.setModel(assignedModel);
+
+    }
+
+    private void updateDirectorLists() {
+        Set<Director> uniqueAssigned = new LinkedHashSet<>(assignedDirectors);
+        Set<Director> uniqueAvailable = new LinkedHashSet<>(availableDirectors);
+
+        DefaultListModel<Director> availableModel = new DefaultListModel<>();
+        uniqueAvailable.forEach(availableModel::addElement);
+        lsAvailableDirectors.setModel(availableModel);
+
+        DefaultListModel<Director> assignedModel = new DefaultListModel<>();
+        uniqueAssigned.forEach(assignedModel::addElement);
+        lsAssignedDirectors.setModel(assignedModel);
+    }
+
+    private void initActorDragAndDrop() {
+        lsAvailableActors.setDropMode(DropMode.ON);
+        lsAvailableActors.setDragEnabled(true);
+
+        lsAssignedActors.setDropMode(DropMode.ON);
+        lsAssignedActors.setDragEnabled(true);
+
+        TransferHandler handlerToAssigned = GenericTransferable.createTransferHandler((Actor a) -> {
+            Movie selectedMovie = (Movie) cbMovies.getSelectedItem();
+            if (selectedMovie == null || a == null) {
+                return;
+            }
+
+            try {
+                movieActorRepository.createMovieActor(new MovieActor(selectedMovie.getId(), a.getId()));
+                assignedActors = movieActorRepository.selectActorsForMovie(selectedMovie.getId());
+                availableActors = movieActorRepository.selectActorsNotInMovie(selectedMovie.getId());
+                updateActorLists();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        TransferHandler handlerToAvailable = GenericTransferable.createTransferHandler((Actor a) -> {
+            Movie selectedMovie = (Movie) cbMovies.getSelectedItem();
+            if (selectedMovie == null || a == null) {
+                return;
+            }
+
+            try {
+                movieActorRepository.deleteMovieActor(selectedMovie.getId(), a.getId());
+                assignedActors = movieActorRepository.selectActorsForMovie(selectedMovie.getId());
+                availableActors = movieActorRepository.selectActorsNotInMovie(selectedMovie.getId());
+                updateActorLists();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        lsAvailableActors.setTransferHandler(handlerToAssigned);
+        lsAssignedActors.setTransferHandler(handlerToAvailable);
+
+        lsAssignedActors.setTransferHandler(handlerToAssigned);
+        lsAvailableActors.setTransferHandler(handlerToAvailable);
+
+    }
+
+    private void initDirectorDragAndDrop() {
+        lsAvailableDirectors.setDropMode(DropMode.ON);
+        lsAvailableDirectors.setDragEnabled(true);
+
+        lsAssignedDirectors.setDropMode(DropMode.ON);
+        lsAssignedDirectors.setDragEnabled(true);
+
+        TransferHandler handlerToAssigned = GenericTransferable.createTransferHandler((Director d) -> {
+            Movie selectedMovie = (Movie) cbMovies.getSelectedItem();
+            if (selectedMovie == null || d == null) {
+                return;
+            }
+
+            try {
+                movieDirectorRepository.createMovieDirector(new MovieDirector(selectedMovie.getId(), d.getId()));
+                assignedDirectors = movieDirectorRepository.selectDirectorsForMovie(selectedMovie.getId());
+                availableDirectors = movieDirectorRepository.selectDirectorsNotInMovie(selectedMovie.getId());
+                updateDirectorLists();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        TransferHandler handlerToAvailable = GenericTransferable.createTransferHandler((Director d) -> {
+            Movie selectedMovie = (Movie) cbMovies.getSelectedItem();
+            if (selectedMovie == null || d == null) {
+                return;
+            }
+
+            try {
+                movieDirectorRepository.deleteMovieDirector(selectedMovie.getId(), d.getId());
+                assignedDirectors = movieDirectorRepository.selectDirectorsForMovie(selectedMovie.getId());
+                availableDirectors = movieDirectorRepository.selectDirectorsNotInMovie(selectedMovie.getId());
+                updateDirectorLists();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        lsAvailableDirectors.setTransferHandler(handlerToAssigned);
+        lsAssignedDirectors.setTransferHandler(handlerToAvailable);
+
+        lsAssignedDirectors.setTransferHandler(handlerToAssigned);
+        lsAvailableDirectors.setTransferHandler(handlerToAvailable);
+    }
 }

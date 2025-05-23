@@ -21,11 +21,12 @@ import javax.sql.DataSource;
  *
  * @author Lovric
  */
-public class MovieDirectorRepositorySql implements MovieDirectorRepository{
+public class MovieDirectorRepositorySql implements MovieDirectorRepository {
+
     private static final String ID_MOVIE_DIRECTOR = "IDMovieDirector";
     private static final String MOVIE_ID = "MovieID";
     private static final String DIRECTOR_ID = "DirectorID";
-    
+
     private static final String PICTURE_PATH = "PicturePath";
     private static final String DATE_BIRTH = "DateBirth";
     private static final String LAST_NAME = "LastName";
@@ -40,8 +41,7 @@ public class MovieDirectorRepositorySql implements MovieDirectorRepository{
     @Override
     public int createMovieDirector(MovieDirector movieDirector) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
-        try (Connection con = dataSource.getConnection();
-             CallableStatement stmt = con.prepareCall(CREATE_MOVIE_DIRECTOR)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(CREATE_MOVIE_DIRECTOR)) {
 
             stmt.setInt(MOVIE_ID, movieDirector.getMovieId());
             stmt.setInt(DIRECTOR_ID, movieDirector.getDirectorId());
@@ -52,63 +52,59 @@ public class MovieDirectorRepositorySql implements MovieDirectorRepository{
         }
     }
 
-   
     @Override
     public void deleteMovieDirector(int movieId, int directorId) throws Exception {
-         DataSource dataSource = DataSourceSingleton.getInstance();
-             try (Connection con = dataSource.getConnection();
-                 CallableStatement stmt = con.prepareCall(DELETE_MOVIE_DIRECTOR_BY_MOVIE_DIRECTOR)) {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(DELETE_MOVIE_DIRECTOR_BY_MOVIE_DIRECTOR)) {
 
-                    stmt.setInt(MOVIE_ID, movieId);
-                    stmt.setInt(DIRECTOR_ID, directorId);
+            stmt.setInt(MOVIE_ID, movieId);
+            stmt.setInt(DIRECTOR_ID, directorId);
 
-                    stmt.executeUpdate();
-    }
+            stmt.executeUpdate();
+        }
     }
 
     @Override
     public List<Director> selectDirectorsForMovie(int movieId) throws Exception {
-         List<Director> directors = new ArrayList<>();
-            DataSource dataSource = DataSourceSingleton.getInstance();
-            try (Connection con = dataSource.getConnection();
-                CallableStatement stmt = con.prepareCall(SELECT_DIRECTORS_FOR_MOVIE)) {
-                stmt.setInt(MOVIE_ID, movieId);
+        List<Director> directors = new ArrayList<>();
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_DIRECTORS_FOR_MOVIE)) {
+            stmt.setInt(MOVIE_ID, movieId);
             try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                directors.add(new Director(
-                    rs.getInt(ID_DIRECTOR),
-                    rs.getString(NAME),
-                    rs.getString(LAST_NAME),
-                    LocalDate.parse(rs.getString(DATE_BIRTH), Actor.DATE_FORMATTER),
-                    rs.getString(PICTURE_PATH)
-                ));
+                while (rs.next()) {
+                    directors.add(new Director(
+                            rs.getInt(ID_DIRECTOR),
+                            rs.getString(NAME),
+                            rs.getString(LAST_NAME),
+                            LocalDate.parse(rs.getString(DATE_BIRTH), Actor.DATE_FORMATTER),
+                            rs.getString(PICTURE_PATH)
+                    ));
+                }
             }
         }
-    }
-    return directors;
+        return directors;
     }
 
     @Override
     public List<Director> selectDirectorsNotInMovie(int movieId) throws Exception {
-         List<Director> directors = new ArrayList<>();
-            DataSource dataSource = DataSourceSingleton.getInstance();
+        List<Director> directors = new ArrayList<>();
+        DataSource dataSource = DataSourceSingleton.getInstance();
 
-        try (Connection con = dataSource.getConnection();
-            CallableStatement stmt = con.prepareCall(SELECT_DIRECTORS_NOT_IN_MOVIE)) {
+        try (Connection con = dataSource.getConnection(); CallableStatement stmt = con.prepareCall(SELECT_DIRECTORS_NOT_IN_MOVIE)) {
             stmt.setInt(MOVIE_ID, movieId);
 
-        try (ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                directors.add(new Director(
-                    rs.getInt(ID_DIRECTOR),
-                    rs.getString(NAME),
-                    rs.getString(LAST_NAME),
-                    LocalDate.parse(rs.getString(DATE_BIRTH), Actor.DATE_FORMATTER),
-                    rs.getString(PICTURE_PATH)
-                ));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    directors.add(new Director(
+                            rs.getInt(ID_DIRECTOR),
+                            rs.getString(NAME),
+                            rs.getString(LAST_NAME),
+                            LocalDate.parse(rs.getString(DATE_BIRTH), Actor.DATE_FORMATTER),
+                            rs.getString(PICTURE_PATH)
+                    ));
+                }
             }
         }
-    }
-    return directors;
+        return directors;
     }
 }

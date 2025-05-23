@@ -15,8 +15,7 @@ public final class User {
     private String password;
     private Role role;
 
-    
-    public User(){
+    public User() {
     }
 
     public User(int id, String username, String password, Role role) {
@@ -63,8 +62,5 @@ public final class User {
     public void setRole(Role role) {
         this.role = role;
     }
-   
-    
-    
-    
+
 }

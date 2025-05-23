@@ -12,11 +12,11 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author Lovric
  */
-public class GenreTableModel extends AbstractTableModel{
+public class GenreTableModel extends AbstractTableModel {
 
     private static final String[] COLUMN_NAMES = {
-       "ID",
-       "Genre Name"
+        "ID",
+        "Genre Name"
     };
 
     private List<Genre> genres;
@@ -29,6 +29,7 @@ public class GenreTableModel extends AbstractTableModel{
         this.genres = genres;
         fireTableDataChanged();
     }
+
     @Override
     public int getRowCount() {
         return genres.size();
@@ -43,12 +44,16 @@ public class GenreTableModel extends AbstractTableModel{
     public Object getValueAt(int rowIndex, int columnIndex) {
         Genre genre = genres.get(rowIndex);
         return switch (columnIndex) {
-            case 0 -> genre.getId();
-            case 1 -> genre.getGenreName();
-            default -> throw new RuntimeException("No such column");
+            case 0 ->
+                genre.getId();
+            case 1 ->
+                genre.getGenreName();
+            default ->
+                throw new RuntimeException("No such column");
         };
     }
-        @Override
+
+    @Override
     public String getColumnName(int column) {
         return COLUMN_NAMES[column];
     }
@@ -56,9 +61,12 @@ public class GenreTableModel extends AbstractTableModel{
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return switch (columnIndex) {
-            case 0 -> Integer.class;
-            case 1 -> String.class;
-            default -> Object.class;
+            case 0 ->
+                Integer.class;
+            case 1 ->
+                String.class;
+            default ->
+                Object.class;
         };
     }
 }

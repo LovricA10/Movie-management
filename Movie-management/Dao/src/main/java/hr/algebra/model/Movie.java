@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
  * @author Lovric
  */
 public final class Movie {
-    
+
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
     private int id;
     private String title;
@@ -20,10 +20,9 @@ public final class Movie {
     private String description;
     private LocalDateTime startDate;
     private String picturePath;
-    
-    
-    public Movie(){
-        
+
+    public Movie() {
+
     }
 
     public Movie(int id, String title, String link, String description, LocalDateTime startDate, String picturePath) {
@@ -94,11 +93,7 @@ public final class Movie {
     @Override
     public String toString() {
         return title;
-        
+
     }
 
-    
-
- 
-    
 }

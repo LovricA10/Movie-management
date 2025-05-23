@@ -4,11 +4,14 @@
  */
 package hr.algebra.view;
 
+import hr.algebra.dal.AdminRepository;
 import hr.algebra.dal.MovieRepository;
 import hr.algebra.dal.RepositoryFactory;
 import hr.algebra.model.Movie;
 import hr.algebra.parsers.rss.MovieParser;
 import hr.algebra.utilities.MessageUtils;
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,6 +41,7 @@ public class UploadMoviesPanel extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         lsMoviesList = new javax.swing.JList<>();
+        btnDeleteMovies = new javax.swing.JButton();
         btnUploadMovies = new javax.swing.JButton();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -47,6 +51,14 @@ public class UploadMoviesPanel extends javax.swing.JPanel {
         });
 
         jScrollPane1.setViewportView(lsMoviesList);
+
+        btnDeleteMovies.setBackground(new java.awt.Color(255, 51, 51));
+        btnDeleteMovies.setText("Delete Movies");
+        btnDeleteMovies.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteMoviesActionPerformed(evt);
+            }
+        });
 
         btnUploadMovies.setText("Upload Movies");
         btnUploadMovies.addActionListener(new java.awt.event.ActionListener() {
@@ -63,8 +75,10 @@ public class UploadMoviesPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(btnUploadMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnDeleteMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -74,7 +88,9 @@ public class UploadMoviesPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnUploadMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDeleteMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnUploadMovies, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -83,42 +99,76 @@ public class UploadMoviesPanel extends javax.swing.JPanel {
         init();
     }//GEN-LAST:event_formComponentShown
 
+    private void btnDeleteMoviesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteMoviesActionPerformed
+        try {
+            boolean confirm = MessageUtils.showConfirmDialog(
+                    "Confirm Delete",
+                    "Are you sure you want to delete all movies and image files?"
+            );
+            if (!confirm) {
+                return;
+            }
+            adminRepository.deleteAllData();
+            File folder = new File(ASSETS_PATH);
+            if (folder.exists() && folder.isDirectory()) {
+                for (File file : folder.listFiles()) {
+                    if (file.isFile()) {
+                        boolean deleted = file.delete();
+                        if (!deleted) {
+                            System.err.println("Failed to delete: " + file.getName());
+                        }
+                    }
+                }
+            }
+            loadModel();
+            MessageUtils.showInformationMessage("Success", "All movies and image files deleted.");
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Logger.getLogger(UploadMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+            MessageUtils.showErrorMessage("Error", "Failed to delete movies and images.");
+        }
+    }//GEN-LAST:event_btnDeleteMoviesActionPerformed
+
     private void btnUploadMoviesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadMoviesActionPerformed
         try {
             List<Movie> movies = MovieParser.parse();
-            repository.createMovies(movies);
+            movieRepository.createMovies(movies);
             loadModel();
         } catch (Exception ex) {
-            ex.printStackTrace(); 
+            ex.printStackTrace();
             MessageUtils.showErrorMessage("Unrecoverable error", "Cannot initiate form!");
             //System.exit(1);
         }
     }//GEN-LAST:event_btnUploadMoviesActionPerformed
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDeleteMovies;
     private javax.swing.JButton btnUploadMovies;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<Movie> lsMoviesList;
     // End of variables declaration//GEN-END:variables
     private DefaultListModel<Movie> movieModel;
-    private MovieRepository repository;
-    
+    private AdminRepository adminRepository;
+    private MovieRepository movieRepository;
+    private static final String ASSETS_PATH = Paths.get("").toAbsolutePath().resolve("assets").toString();
+
     private void init() {
         try {
-            repository = RepositoryFactory.getRepository(MovieRepository.class);
+            adminRepository = RepositoryFactory.getRepository(AdminRepository.class);
+            movieRepository = RepositoryFactory.getRepository(MovieRepository.class);
             movieModel = new DefaultListModel<>();
             loadModel();
         } catch (Exception ex) {
-            ex.printStackTrace(); 
-             Logger.getLogger(UploadMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+            Logger.getLogger(UploadMoviesPanel.class.getName()).log(Level.SEVERE, null, ex);
             MessageUtils.showErrorMessage("Unrecoverable error", "Cannot initiate form!");
             //System.exit(1);
         }
     }
 
     private void loadModel() throws Exception {
-        List<Movie> movies = repository.selectMovies();
+        List<Movie> movies = movieRepository.selectMovies();
         movieModel.clear();
         movies.forEach(movieModel::addElement);
         lsMoviesList.setModel(movieModel);
